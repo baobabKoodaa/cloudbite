@@ -1,0 +1,495 @@
+<html>
+    <head>
+        <title>Cloudbite - Bite-sized cloud learning with spaced repetition</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            html,
+            body {
+                margin: 0;
+                height: 100%;
+                overflow: hidden;
+            }
+            body {
+                background-color: #ffe8d6;
+                font-family: Arial, Helvetica, sans-serif;
+                font: 400 24px Arial;
+            }
+
+            #centered-content {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                -webkit-transform: translate(-50%, -50%);
+                transform: translate(-50%, -50%);
+            }
+
+            #flip-card-outer-container {
+                position: relative;
+                background-color: transparent;
+                width: 600px;
+                height: 400px;
+                perspective: 2000px;
+                visibility: hidden;
+                transition: transform 0.4s;
+                z-index: 11;
+            }
+
+            #card-left {
+                left: 0px;
+            }
+
+            #card-right {
+                right: 0px;
+            }
+
+            #card-left,
+            #card-right {
+                position: absolute;
+                width: 50%;
+                height: 100%;
+                z-index: 200;
+                cursor: pointer;
+            }
+
+            #flip-card-inner-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+                transition: transform 0.4s;
+                transform-style: preserve-3d;
+                border-radius: 20px;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                z-index: 100;
+            }
+
+            #potemkin-card {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 600px;
+                height: 400px;
+                perspective: 2000px;
+                transform-style: preserve-3d;
+                border-radius: 20px;
+                box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+                z-index: 10;
+            }
+
+            #potemkin-card-inner-container {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                text-align: center;
+            }
+
+            #potemkin-card-front-container {
+                visibility: hidden;
+            }
+
+            #flip-card-front-container,
+            #flip-card-back-container,
+            #potemkin-card-front-container {
+                position: absolute;
+                width: 560px; /* outer-container width minus padding */
+                height: 100%;
+                -webkit-backface-visibility: hidden;
+                backface-visibility: hidden;
+                border-radius: 20px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+
+            #flip-card-front-container,
+            #potemkin-card-front-container {
+                background-color: #ddbea9;
+                color: #36382e;
+            }
+
+            #flip-card-back-container {
+                background-color: #cb997e;
+                color: white;
+                transform: rotateY(180deg);
+            }
+
+            #action-bar {
+                position: absolute;
+                top: 400px;
+                z-index: 12;
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Old versions of Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+            }
+
+            .action-bar-item {
+                vertical-align: top;
+                display: inline-block;
+                text-align: center;
+                width: 120px;
+                margin: 35px;
+                cursor: pointer;
+            }
+            .svg-container {
+                width: 60px;
+                transition: transform 0.4s;
+            }
+            .svg-container:hover {
+                transform: scale(1.2);
+            }
+            .svg-path {
+                fill: #b7b7a4;
+            }
+            .svg-caption {
+                font-size: 18px;
+                font-style: italic;
+                color: #36382e;
+                display: block;
+                margin-top: 5px;
+            }
+
+            ul {
+                text-align: left !important;
+            }
+
+            .text-left {
+                text-align: left !important;
+            }
+
+            .cloud-provider {
+                position: absolute;
+                left: 20px;
+                top: 20px;
+                width: 48px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="centered-content">
+            <div id="action-bar">
+                <div class="action-bar-item" id="abi-later" onClick="repeatLater()">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path class="svg-path" d="M11 0h1v3l3 7v8a2 2 0 0 1-2 2H5c-1.1 0-2.31-.84-2.7-1.88L0 12v-2a2 2 0 0 1 2-2h7V2a2 2 0 0 1 2-2zm6 10h3v10h-3V10z" />
+                    </svg>
+                    <span class="svg-caption">I got this<br />(repeat later)</span>
+                </div>
+                <div class="action-bar-item" id="abi-soon" onClick="repeatSoon()">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path class="svg-path" d="M11 20a2 2 0 0 1-2-2v-6H2a2 2 0 0 1-2-2V8l2.3-6.12A3.11 3.11 0 0 1 5 0h8a2 2 0 0 1 2 2v8l-3 7v3h-1zm6-10V0h3v10h-3z" />
+                    </svg>
+                    <span class="svg-caption">I need practice<br />(repeat soon)</span>
+                </div>
+                <div class="action-bar-item" id="abi-never" onClick="repeatNever()">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path class="svg-path" d="M6 2l2-2h4l2 2h4v2H2V2h4zM3 6h14l-1 14H4L3 6zm5 2v10h1V8H8zm3 0v10h1V8h-1z" />
+                    </svg>
+                    <span class="svg-caption">Forget this<br />(repeat never)</span>
+                </div>
+            </div>
+            <div id="potemkin-card">
+                <div id="potemkin-card-inner-container">
+                    <div id="potemkin-card-front-container">
+                        <img src="aws.svg" class="cloud-provider" />
+                        <div id="potemkin-card-front"></div>
+                    </div>
+                </div>
+            </div>
+            <div id="flip-card-outer-container">
+                <div id="card-left" onMouseOver="hover(-10)" onMouseOut="hover(0)"></div>
+                <div id="card-right" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
+                <div id="flip-card-inner-container">
+                    <div id="flip-card-front-container">
+                        <img src="aws.svg" class="cloud-provider" />
+                        <div id="flip-card-front"></div>
+                    </div>
+                    <div id="flip-card-back-container">
+                        <div id="flip-card-back"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="flipcards.js" type="text/javascript" charset="UTF-8"></script>
+        <script>
+            const PRIO_INITIAL = 1000;
+            const PRIO_INCREASE_LATER = 10;
+            const PRIO_INCREASE_SOON = 1;
+            const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
+
+            // State
+            let flipped = false;
+            let currentCard = null;
+            let permanentRotation = 0;
+            let mouseDownCard = null;
+            let mouseDragging = false;
+            let activeDropBoxFunction = null;
+
+            const onMouseDownCard = function (event) {
+                mouseDownCard = {
+                    x: event.clientX,
+                    y: event.clientY,
+                };
+            };
+
+            const onMouseMove = function (event) {
+                if (mouseDownCard) {
+                    const diffX = event.clientX - mouseDownCard.x;
+                    const diffY = event.clientY - mouseDownCard.y;
+                    if (mouseDragging || Math.abs(diffX) + Math.abs(diffY) > 20) {
+                        mouseDragging = true;
+                        // Drag card
+                        document.getElementById("flip-card-outer-container").style.transition = `transform 0s`;
+                        document.getElementById("flip-card-outer-container").style.transform = `translate(${diffX}px, ${diffY}px)`;
+                        // Reset card temporary-rotation because that +-10 rotation looks weird when dragged.
+                        rotate(0);
+                        // Make potemkin card visible because it looks nice when real card snaps to its position.
+                        document.getElementById("potemkin-card").style.visibility = "visible";
+                    }
+                }
+            };
+
+            document.addEventListener("mousemove", (e) => {
+                onMouseMove(e);
+            });
+            document.addEventListener("mouseup", (e) => {
+                if (e.which == 1) {
+                    onMouseUpAnywhere(e);
+                }
+            });
+            document.getElementById("card-left").addEventListener("mousedown", (e) => {
+                if (e.which == 1) {
+                    onMouseDownCard(e);
+                }
+            });
+            document.getElementById("card-left").addEventListener("mouseup", (e) => {
+                if (e.which == 1) {
+                    onMouseUpCard(-180);
+                }
+            });
+            document.getElementById("card-right").addEventListener("mousedown", (e) => {
+                if (e.which == 1) {
+                    onMouseDownCard(e);
+                }
+            });
+            document.getElementById("card-right").addEventListener("mouseup", (e) => {
+                if (e.which == 1) {
+                    onMouseUpCard(180);
+                }
+            });
+
+            document.getElementById("abi-soon").addEventListener("mouseenter", (e) => {
+                activeDropBoxFunction = repeatSoon;
+            });
+            document.getElementById("abi-soon").addEventListener("mouseleave", (e) => {
+                activeDropBoxFunction = null;
+            });
+            document.getElementById("abi-later").addEventListener("mouseenter", (e) => {
+                activeDropBoxFunction = repeatLater;
+            });
+            document.getElementById("abi-later").addEventListener("mouseleave", (e) => {
+                activeDropBoxFunction = null;
+            });
+            document.getElementById("abi-never").addEventListener("mouseenter", (e) => {
+                activeDropBoxFunction = repeatNever;
+            });
+            document.getElementById("abi-never").addEventListener("mouseleave", (e) => {
+                activeDropBoxFunction = null;
+            });
+
+            const onMouseUpAnywhere = function (event) {
+                mouseDownCard = false;
+                if (!mouseDragging) {
+                    return;
+                }
+                mouseDragging = false;
+                // Since we are no longer dragging we want to re-enable animations.
+                document.getElementById("flip-card-outer-container").style.transition = `transform 0.4s`;
+                if (activeDropBoxFunction) {
+                    // Case: drag-and-dropped card over a drop box.
+                    activeDropBoxFunction();
+                } else {
+                    // Case: drag-and-dropped card over nothing, so animate card back to its position.
+                    document.getElementById("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
+                    // Hide potemkin card after real card lands, because it looks weird when real card is rotated +-10 over it.
+                    window.setTimeout(() => {
+                        document.getElementById("potemkin-card").style.visibility = "hidden";
+                    }, 400);
+                }
+            };
+
+            // onMouseUpCard event needs to be triggered before onMouseUpAnywhere!
+            const onMouseUpCard = function (delta) {
+                if (mouseDownCard && !mouseDragging) {
+                    flip(delta);
+                }
+            };
+
+            const rotate = function (temporaryRotation) {
+                const deg = permanentRotation + temporaryRotation;
+                document.getElementById("flip-card-inner-container").style.transform = `rotateY(${deg}deg)`;
+            };
+            const hover = function (delta) {
+                rotate(delta);
+            };
+            const flip = function (delta) {
+                flipped = !flipped;
+                permanentRotation += delta;
+                rotate(0);
+            };
+
+            // Hash algorithm from https://stackoverflow.com/a/7616484/4490400
+            hash = function (flipcard) {
+                let hash = 0;
+                const str = flipcard.q + ";;;" + flipcard.a;
+                for (let i = 0; i < str.length; i++) {
+                    let chr = str.charCodeAt(i);
+                    hash = (hash << 5) - hash + chr;
+                    hash |= 0; // Convert to 32bit integer
+                }
+                return hash;
+            };
+
+            const saveStateToLocalStorage = function () {
+                const prioForHash = {};
+                for (let i = 0; i < flipcards.length; i++) {
+                    const c = flipcards[i];
+                    prioForHash[c.hash] = c.prio;
+                }
+                localStorage.setItem("prioForHash", JSON.stringify(prioForHash));
+            };
+
+            const getMinPrio = function (excludeCard) {
+                let minPrio = Number.POSITIVE_INFINITY;
+                for (let i = 0; i < flipcards.length; i++) {
+                    const card = flipcards[i];
+                    if (card === excludeCard) {
+                        continue;
+                    }
+                    if (card.prio < minPrio) {
+                        minPrio = card.prio;
+                    }
+                }
+                return minPrio;
+            };
+
+            const initializeFlipcards = function () {
+                let prioForHash = localStorage.getItem("prioForHash");
+                if (prioForHash) {
+                    prioForHash = JSON.parse(prioForHash);
+                } else {
+                    prioForHash = {};
+                }
+                for (let i = 0; i < flipcards.length; i++) {
+                    const c = flipcards[i];
+                    c.hash = hash(c);
+                    c.prio = PRIO_INITIAL;
+                    if (c.hash in prioForHash) {
+                        c.prio = prioForHash[c.hash];
+                    }
+                    if (!c.prio) {
+                        // Case: card was "trashed", JSONified cookie had undefined/null.
+                        c.prio = Number.POSITIVE_INFINITY;
+                    }
+                }
+            };
+
+            const throwAwayCard = function (translateX, translateY) {
+                document.getElementById("flip-card-outer-container").style.transform = `translate(${translateX}px, ${translateY}px) scale(0)`;
+            };
+
+            const changeCurrentCard = function () {
+                let minPrio = Number.POSITIVE_INFINITY;
+                let minCard = null;
+                for (let i = 0; i < flipcards.length; i++) {
+                    const card = flipcards[i];
+                    const prio = card.prio + Math.random(); // Random (between 0-1) is useful to break ties (shuffle).
+                    if (prio < minPrio) {
+                        minPrio = prio;
+                        minCard = card;
+                    }
+                }
+                if (!minCard) {
+                    minCard = {
+                        q: "Whoops, looks like we ran out of cards.",
+                        a: "Nothing to see here.",
+                    };
+                }
+                currentCard = minCard;
+            };
+
+            const decoratePotemkin = function () {
+                document.getElementById("potemkin-card").style.visibility = "visible";
+                document.getElementById("potemkin-card-front-container").style.visibility = "visible";
+                document.getElementById("potemkin-card-front").innerHTML = currentCard.q;
+            };
+
+            const resetCardOrientationQuickly = function () {
+                document.getElementById("flip-card-outer-container").style.visibility = "hidden";
+                document.getElementById("flip-card-outer-container").style.transition = `transform 0s`; // For position snap reset
+                document.getElementById("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
+                document.getElementById("flip-card-inner-container").style.transition = `transform 0s`; // For rotation snap reset
+                flipped = false;
+                permanentRotation = 0;
+                rotate(0);
+            };
+
+            const renderRealCard = function () {
+                // Set content
+                document.getElementById("flip-card-front").innerHTML = currentCard.q;
+                document.getElementById("flip-card-back").innerHTML = currentCard.a;
+
+                // We need to set these again because resetCardOrientationQuickly may have changed them to 0.
+                document.getElementById("flip-card-outer-container").style.transition = `transform 0.4s`;
+                document.getElementById("flip-card-inner-container").style.transition = `transform 0.4s`;
+
+                // Make card visible again.
+                document.getElementById("flip-card-outer-container").style.visibility = "visible";
+
+                // Hide potemkin card because it looks ugly when overlaying card is rotated +-10
+                document.getElementById("potemkin-card").style.visibility = "hidden";
+
+                // Potemkin card contents should be hidden as soon as we get real card on top of it.
+                document.getElementById("potemkin-card-front-container").style.visibility = "hidden";
+            };
+
+            const repeatSoon = function () {
+                switchCard(PRIO_INCREASE_SOON, 0, 260);
+            };
+
+            const repeatLater = function () {
+                switchCard(PRIO_INCREASE_LATER, -200, 260);
+            };
+
+            const repeatNever = function () {
+                switchCard(PRIO_INCREASE_NEVER, 200, 260);
+            };
+
+            const switchCard = function (prioIncrease, translateX, translateY) {
+                currentCard.prio += prioIncrease;
+                const minPrioFromOtherCards = getMinPrio(currentCard);
+                if (currentCard.prio < minPrioFromOtherCards) {
+                    // Prevent situation where we end up displaying same card twice in a row.
+                    currentCard.prio = minPrioFromOtherCards + PRIO_INCREASE_SOON;
+                }
+                changeCurrentCard();
+                decoratePotemkin();
+                throwAwayCard(translateX, translateY);
+                window.setTimeout(resetCardOrientationQuickly, 400);
+                window.setTimeout(renderRealCard, 500);
+                saveStateToLocalStorage();
+            };
+
+            initializeFlipcards();
+            changeCurrentCard();
+            renderRealCard();
+            document.getElementById("flip-card-outer-container").style.visibility = "visible";
+        </script>
+    </body>
+</html>
