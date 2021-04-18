@@ -1,11 +1,12 @@
 const flipcards = [
     {
         "q": "Differences and commonalities between pre-signed URLs and signed URLs?",
-        "a": "Pre-signed URLs vs signed URLs:<br><ul><li>Pre-signed URLs is a feature of S3.</li><li>Signed URLs is a feature of CloudFront.</li><li>Main use case for both is to share content privately with users, by providing a URL that includes a secret.</li><li>Both can be restricted with factors such as expiration date.</li><li>In addition, pre-signed URLs can be used to allow users to upload objects to buckets where they normally wouldn't have permissions to upload.</li></ul>"
+        "a": "Pre-signed URLs vs signed URLs<br><br><ul><li>Pre-signed URLs is a feature of S3.</li><li>Signed URLs is a feature of CloudFront.</li><li>Main use case for both is to share content privately with users, by providing a URL that includes a secret.</li><li>Both can be restricted with factors such as expiration date.</li><li>In addition, pre-signed URLs can be used to allow users to upload objects to buckets where they normally wouldn't have permissions to upload.</li></ul>"
     },
     {
         "q": "Compare CloudFront's signed URLs to signed cookies. Both are used to provide users access to private content. When should you use one over the other?",
         "a": `Signed URLs vs signed cookies
+                <br><br>
                 <ul>
                     <li>Signed cookies are often more appropriate than signed URLs, because you can provide access to <i>multiple</i> files at once, and you don't have to change any URLs.</li>
                     <li>Signed URLs can be useful if you want to restrict access to <i>individual</i> files, or if you are unable to use signed cookies.</li>
@@ -22,15 +23,16 @@ const flipcards = [
     },
     {
         "q": "What kind of volumes can you mount on an EC2 instance?",
-        "a": "EC2 volume options:<br><ul><li>Instance store (ephemeral)</li><li>EBS (Elastic Block Store, persistent)</li><li>EFS (Elastic File System, also persistent, can be concurrently mounted by multiple instances)</li></ul>"
+        "a": "EC2 volume options<br><br><ul><li>Instance store (ephemeral)</li><li>EBS (Elastic Block Store, persistent)</li><li>EFS (Elastic File System, also persistent, can be concurrently mounted by multiple instances)</li></ul>"
     },
     {
         "q": "Summarize EC2 placement groups.",
-        "a": "EC2 placement groups<ul><li><b>Cluster</b>: pack instances physically close together within an AZ (e.g. for HPC where instances need low latency communication with each other)</li><li><b>Partition</b>: multiple instances within each partition, partitions do not share underlying hardware with each other (e.g. for distributed jobs like hadoop)</li><li><b>Spread</b>: each instance is kept on a different rack (e.g. for critical workloads where work is replicated)</li></ul>"
+        "a": "EC2 placement groups<br><br><ul><li><b>Cluster</b>: pack instances physically close together within an AZ (e.g. for HPC where instances need low latency communication with each other)</li><li><b>Partition</b>: multiple instances within each partition, partitions do not share underlying hardware with each other (e.g. for distributed jobs like hadoop)</li><li><b>Spread</b>: each instance is kept on a different rack (e.g. for critical workloads where work is replicated)</li></ul>"
     },
     {
         "q": "When does Auto Scaling Group spin up new instances?",
-        "a": `Auto Scaling Group spins up new instances in 2 cases:
+        "a": `Auto Scaling Group spins up new instances
+              <br><br>
               <ul>
                 <li>When an unhealthy instance is detected and needs to be replaced with a fresh instance</li>
                 <li>When the number of instances needs to be increased due to scaling policy (e.g. to scale in response to traffic surge)</li>
@@ -40,6 +42,7 @@ const flipcards = [
     {
         "q": "List the scaling policies of Auto Scaling Groups.",
         "a": `Scaling policies of Auto Scaling Groups
+              <br><br>
               <ul>
                 <li>Manual scaling</li>
                 <li>Scheduled scaling</li>
@@ -65,6 +68,7 @@ const flipcards = [
     {
         "q": "List different types of Elastic Load Balancers.",
         "a": `Elastic Load Balancer types
+                <br><br>
                 <ul>
                     <li>Application Load Balancer (most common)</li>
                     <li>Network Load Balancer (network layer)</li>
@@ -98,7 +102,8 @@ const flipcards = [
     },
     {
         "q": "Compare Elastic Beanstalk's web environment to worker environment.",
-        "a": `There are 2 ways to deploy your app in Elastic Beanstalk:
+        "a": `Elastic Beanstalk environments
+                <br><br>
                 <ul>
                     <li>Web environment orchestrates an ASG of EC2 instances behind an ELB</li>
                     <li>Worker environment orchestrates an SQS queue, EC2 instances behind SQS daemon, and ASG to scale based on queue size</li>
@@ -127,11 +132,11 @@ const flipcards = [
     {
         "q": "How is ECS related to Fargate?",
         "a": `<div class="text-left">Elastic Container Service (ECS) is a platform to orchestrate containers. There are 2 ways to run your workloads in ECS:</div>
-                <ul>
+        <br><ul>
                     <li>EC2 fleet with an Auto Scaling Group</li>
                     <li>Serverless, with Fargate</li>
                 </ul>
-              <div class="text-left">You can find Fargate under ECS in the AWS Console.</div>
+                <br><div class="text-left">You can find Fargate under ECS in the AWS Console.</div>
              `
     },
     {
@@ -169,7 +174,7 @@ const flipcards = [
     {
         "q": "Describe typical use cases for VPC Flow logs",
         "a": `VPC Flow logs can help you with tasks such as:
-                <ul>
+        <br><br><ul>
                     <li>Diagnosing connectivity issues (e.g. misconfigured security group rules)</li>
                     <li>Monitoring traffic that reaches your instance</li>
                 </ul>
@@ -178,18 +183,19 @@ const flipcards = [
     {
         "q": "Describe types of IAM policies.",
         "a": `IAM policy types
-                <ul>
+        <br><br><ul>
                     <li>AWS managed policy</li>
                     <li>Customer managed policy</li>
                     <li>Inline policy</li>
                 </ul>
+                <br>
               <div class="text-left">Policies are attached to identities (users, roles, or groups). Inline policy means a policy that's directly attached to a single identity. Other policies can be attached to multiple entities. AWS managed policies are intended to reduce manual configuration for common use cases, e.g. AWS maintains AdministratorAccess policy that gives wide permissions for many things.</div>
              `
     },
     {
         "q": "Compare Cognito user pools and identity pools.",
         "a": `Amazon Cognito
-                <ul>
+        <br><br><ul>
                     <li><b>User pools</b> are for authentication (identity verification). For example, sign-up, sign-in, user data, user tracking.</li>
                     <li><b>Identity pools</b> are for authorization (access control). For example, generate temporary AWS credentials for unauthenticated users, or give your authenticated users access to your AWS resources.</li>
                 </ul>

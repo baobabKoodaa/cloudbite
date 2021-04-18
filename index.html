@@ -171,6 +171,8 @@
 
             ul {
                 text-align: left !important;
+                margin-bottom: 0;
+                margin-top: 0;
             }
 
             .text-left {
@@ -188,6 +190,7 @@
 
     <body>
         <div id="centered-content">
+            <!-- Navigation bar -->
             <div id="navigation-bar">
                 <div class="navigation-item" title="User data" alt="User data">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
@@ -205,6 +208,8 @@
                     </svg>
                 </div>
             </div>
+
+            <!-- Action bar -->
             <div id="action-bar">
                 <div class="action-bar-item" id="abi-later" onClick="repeatLater()" alt="I got this (repeat later)">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
@@ -230,6 +235,8 @@
                     <span class="svg-caption">Forget this<br />(repeat never)</span>
                 </div>
             </div>
+
+            <!-- Potemkin card -->
             <div id="potemkin-card">
                 <div id="potemkin-card-inner-container">
                     <div id="potemkin-card-front-container">
@@ -238,6 +245,8 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Real card -->
             <div id="flip-card-outer-container">
                 <div id="card-left" onMouseOver="hover(-10)" onMouseOut="hover(0)"></div>
                 <div id="card-right" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
