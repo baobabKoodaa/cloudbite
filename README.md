@@ -1,4 +1,4 @@
-## Cloudbite
+## Cloudbite - bite-sized cloud learning
 
 Try it here: [https://cloudbite.attejuvonen.fi](https://cloudbite.attejuvonen.fi)
 

@@ -144,6 +144,8 @@
                 -moz-user-select: none; /* Old versions of Firefox */
                 -ms-user-select: none; /* Internet Explorer/Edge */
                 user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+                -webkit-tap-highlight-color: transparent !important;
+                outline: none !important;
             }
 
             .action-bar-item {
@@ -209,7 +211,7 @@
                 position: absolute;
                 left: 260px;
                 bottom: 30px;
-                border-width: 6px;
+                border-width: 5px;
                 border-style: solid;
                 border-color: #b7b7a4;
                 color: #b7b7a4;
@@ -239,30 +241,39 @@
                         />
                     </svg>
                 </div>
-                <div class="navigation-item" title="About Cloudbite" alt="About Cloudbite">
-                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
+                <a href="about.html" target="_blank">
+                    <div class="navigation-item" title="About Cloudbite" alt="About Cloudbite">
+                        <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                </a>
             </div>
 
             <!-- Action bar -->
             <div id="action-bar" class="unselectable">
                 <div class="action-bar-item" id="abi-later" onClick="repeatLater()" alt="I got this (repeat later)">
-                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg class="svg-container" id="abi-later-svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                        <path id="abi-later-svg-container-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                     <span class="svg-caption">I got this<br />(repeat later)</span>
                 </div>
                 <div class="action-bar-item" id="abi-soon" onClick="repeatSoon()" alt="I need practice (repeat soon)">
-                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    <svg class="svg-container" id="abi-soon-svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                        <path
+                            id="abi-soon-svg-container-path"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
                     </svg>
                     <span class="svg-caption">I need practice<br />(repeat soon)</span>
                 </div>
                 <div class="action-bar-item" id="abi-never" onClick="repeatNever()" alt="Forget this (repeat never)">
-                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                    <svg class="svg-container" id="abi-never-svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
                         <path
+                            id="abi-never-svg-container-path"
                             stroke-linecap="round"
                             stroke-linejoin="round"
                             stroke-width="2"
@@ -285,8 +296,8 @@
 
             <!-- Real card -->
             <div id="flip-card-outer-container">
-                <div id="card-left" onMouseOver="hover(-10)" onMouseOut="hover(0)"></div>
-                <div id="card-right" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
+                <div id="card-left" class="unselectable" onMouseOver="hover(-10)" onMouseOut="hover(0)"></div>
+                <div id="card-right" class="unselectable" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
                 <div id="flip-card-inner-container">
                     <div id="flip-card-front-container">
                         <img src="aws.svg" class="cloud-provider" />
@@ -321,7 +332,7 @@
             let permanentRotation = 0;
             let mouseDownCard = null;
             let mouseDragging = false;
-            let activeDropBoxFunction = null;
+            let lastMoveCoordinates = null;
             let userData = null;
 
             const onToggleUserCard = function () {
@@ -348,15 +359,58 @@
 
             const onMouseDownCard = function (event) {
                 mouseDownCard = {
-                    x: event.clientX,
-                    y: event.clientY,
+                    x: event.clientX || event.targetTouches[0].pageX,
+                    y: event.clientY || event.targetTouches[0].pageY,
                 };
+            };
+
+            // onMouseUpCard event needs to be triggered before onMouseUpAnywhere!
+            const onMouseUpCard = function (delta) {
+                if (mouseDownCard && !mouseDragging) {
+                    flip(delta);
+                }
+            };
+
+            const onMouseUpAnywhere = function (event) {
+                mouseDownCard = false;
+                if (!mouseDragging) {
+                    return;
+                }
+                mouseDragging = false;
+                // Since we are no longer dragging we want to re-enable animations.
+                document.getElementById("flip-card-outer-container").style.transition = `transform 0.4s`;
+                // User may or may not be hovering over a drop box.
+                const dropBox = document.elementFromPoint(lastMoveCoordinates.x, lastMoveCoordinates.y);
+                const dropBoxId = (dropBox ? dropBox.id : "") || "";
+                if (dropBoxId.startsWith("abi-later")) {
+                    // We use "startsWith" instead of "equals" because "elementFromPoint" may return
+                    // the div of the action bar item, the svg-container inside the div, or the path inside the svg-container.
+                    // All of these objects have been given ids with the same prefix.
+                    repeatLater();
+                } else if (dropBoxId.startsWith("abi-soon")) {
+                    repeatSoon();
+                } else if (dropBoxId.startsWith("abi-never")) {
+                    repeatNever();
+                } else {
+                    // Case: drag-and-dropped card over nothing, so animate card back to its position.
+                    document.getElementById("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
+                    // Hide potemkin card after real card lands, because it looks weird when real card is rotated +-10 over it.
+                    window.setTimeout(() => {
+                        document.getElementById("potemkin-card").style.visibility = "hidden";
+                    }, 400);
+                }
             };
 
             const onMouseMove = function (event) {
                 if (mouseDownCard) {
-                    const diffX = event.clientX - mouseDownCard.x;
-                    const diffY = event.clientY - mouseDownCard.y;
+                    const x = event.clientX || event.targetTouches[0].pageX;
+                    const y = event.clientY || event.targetTouches[0].pageY;
+                    const diffX = x - mouseDownCard.x;
+                    const diffY = y - mouseDownCard.y;
+                    lastMoveCoordinates = {
+                        x: x,
+                        y: y,
+                    };
                     if (mouseDragging || Math.abs(diffX) + Math.abs(diffY) > 20) {
                         mouseDragging = true;
                         // Drag card
@@ -372,6 +426,7 @@
 
             document.addEventListener("keydown", (e) => {
                 if (document.getElementById("user-data-card").style.visibility == "visible") {
+                    // Disable keyboard shortcuts while the user data card is open.
                     return;
                 }
                 if (e.code === "ArrowRight" || e.code === "ArrowUp") {
@@ -385,81 +440,57 @@
                 }
             });
 
+            // Event listeners for move-mouse or drag-with-touchscreen
             document.addEventListener("mousemove", (e) => {
                 onMouseMove(e);
             });
+            document.addEventListener("touchmove", (e) => {
+                onMouseMove(e);
+            });
+
+            // Event listeners for left-mouse-up-anywhere or stop-dragging-with-touchscreen-anywhere
             document.addEventListener("mouseup", (e) => {
                 if (e.which == 1) {
                     onMouseUpAnywhere(e);
                 }
             });
+            document.addEventListener("touchend", (e) => {
+                onMouseUpAnywhere(e);
+            });
+
+            // Event listeners for left-mouse-down or start-dragging-with-touchscreen on CARD-LEFT
             document.getElementById("card-left").addEventListener("mousedown", (e) => {
                 if (e.which == 1) {
                     onMouseDownCard(e);
                 }
             });
+            document.getElementById("card-left").addEventListener("touchstart", (e) => {
+                onMouseDownCard(e);
+            });
+
+            // Even listener for left-mouse-up on CARD-LEFT (no need for corresponding touchscreen event)
             document.getElementById("card-left").addEventListener("mouseup", (e) => {
                 if (e.which == 1) {
                     onMouseUpCard(-180);
                 }
             });
+
+            // Event listeners for left-mouse-down or start-dragging-with-touchscreen on CARD-RIGHT
             document.getElementById("card-right").addEventListener("mousedown", (e) => {
                 if (e.which == 1) {
                     onMouseDownCard(e);
                 }
             });
+            document.getElementById("card-right").addEventListener("touchstart", (e) => {
+                onMouseDownCard(e);
+            });
+
+            // Event listener for left-mouse-up on CARD-RIGHT (no need for corresponding touchscreen event)
             document.getElementById("card-right").addEventListener("mouseup", (e) => {
                 if (e.which == 1) {
                     onMouseUpCard(180);
                 }
             });
-
-            document.getElementById("abi-soon").addEventListener("mouseenter", (e) => {
-                activeDropBoxFunction = repeatSoon;
-            });
-            document.getElementById("abi-soon").addEventListener("mouseleave", (e) => {
-                activeDropBoxFunction = null;
-            });
-            document.getElementById("abi-later").addEventListener("mouseenter", (e) => {
-                activeDropBoxFunction = repeatLater;
-            });
-            document.getElementById("abi-later").addEventListener("mouseleave", (e) => {
-                activeDropBoxFunction = null;
-            });
-            document.getElementById("abi-never").addEventListener("mouseenter", (e) => {
-                activeDropBoxFunction = repeatNever;
-            });
-            document.getElementById("abi-never").addEventListener("mouseleave", (e) => {
-                activeDropBoxFunction = null;
-            });
-
-            const onMouseUpAnywhere = function (event) {
-                mouseDownCard = false;
-                if (!mouseDragging) {
-                    return;
-                }
-                mouseDragging = false;
-                // Since we are no longer dragging we want to re-enable animations.
-                document.getElementById("flip-card-outer-container").style.transition = `transform 0.4s`;
-                if (activeDropBoxFunction) {
-                    // Case: drag-and-dropped card over a drop box.
-                    activeDropBoxFunction();
-                } else {
-                    // Case: drag-and-dropped card over nothing, so animate card back to its position.
-                    document.getElementById("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
-                    // Hide potemkin card after real card lands, because it looks weird when real card is rotated +-10 over it.
-                    window.setTimeout(() => {
-                        document.getElementById("potemkin-card").style.visibility = "hidden";
-                    }, 400);
-                }
-            };
-
-            // onMouseUpCard event needs to be triggered before onMouseUpAnywhere!
-            const onMouseUpCard = function (delta) {
-                if (mouseDownCard && !mouseDragging) {
-                    flip(delta);
-                }
-            };
 
             const rotate = function (temporaryRotation) {
                 const deg = permanentRotation + temporaryRotation;
