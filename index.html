@@ -253,12 +253,14 @@
             </div>
         </div>
 
-        <script src="flipcards.js" type="text/javascript" charset="UTF-8"></script>
+        <script src="name-generator.js" type="text/javascript" charset="UTF-8"></script>
+        <script src="content/aws.js" type="text/javascript" charset="UTF-8"></script>
         <script>
             const PRIO_INITIAL = 1000;
             const PRIO_INCREASE_LATER = 10;
             const PRIO_INCREASE_SOON = 1;
             const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
+            const COOKIE_KEY = "cloudbite-userdata";
 
             // State
             let flipped = false;
@@ -267,6 +269,8 @@
             let mouseDownCard = null;
             let mouseDragging = false;
             let activeDropBoxFunction = null;
+
+            let userData = null;
 
             const onMouseDownCard = function (event) {
                 mouseDownCard = {
@@ -406,12 +410,15 @@
             };
 
             const saveStateToLocalStorage = function () {
-                const prioForHash = {};
+                userData.prioForHash = {};
                 for (let i = 0; i < flipcards.length; i++) {
                     const c = flipcards[i];
-                    prioForHash[c.hash] = c.prio;
+                    if (c.prio !== PRIO_INITIAL) {
+                        // No need to save default prios, only those that user affected.
+                        userData.prioForHash[c.hash] = c.prio;
+                    }
                 }
-                localStorage.setItem("prioForHash", JSON.stringify(prioForHash));
+                localStorage.setItem(COOKIE_KEY, JSON.stringify(userData));
             };
 
             const getMinPrio = function (excludeCard) {
@@ -428,19 +435,25 @@
                 return minPrio;
             };
 
-            const initializeFlipcards = function () {
-                let prioForHash = localStorage.getItem("prioForHash");
-                if (prioForHash) {
-                    prioForHash = JSON.parse(prioForHash);
+            const initializeUserSession = function () {
+                userData = localStorage.getItem(COOKIE_KEY);
+                if (userData) {
+                    userData = JSON.parse(userData);
                 } else {
-                    prioForHash = {};
+                    userData = {
+                        name: generateName(),
+                        prioForHash: {},
+                        countCardsSeen: {},
+                        last100streaK: [],
+                    };
+                    localStorage.setItem(COOKIE_KEY, JSON.stringify(userData));
                 }
                 for (let i = 0; i < flipcards.length; i++) {
                     const c = flipcards[i];
                     c.hash = hash(c);
                     c.prio = PRIO_INITIAL;
-                    if (c.hash in prioForHash) {
-                        c.prio = prioForHash[c.hash];
+                    if (c.hash in userData.prioForHash) {
+                        c.prio = userData.prioForHash[c.hash];
                     }
                     if (!c.prio) {
                         // Case: card was "trashed", JSONified cookie had undefined/null.
@@ -535,7 +548,7 @@
                 saveStateToLocalStorage();
             };
 
-            initializeFlipcards();
+            initializeUserSession();
             changeCurrentCard();
             renderRealCard();
             document.getElementById("flip-card-outer-container").style.visibility = "visible";
