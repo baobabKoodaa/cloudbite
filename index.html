@@ -118,9 +118,57 @@
                 transform: rotateY(180deg);
             }
 
+            #deck {
+                position: absolute;
+                left: 15px;
+                cursor: pointer;
+            }
+
+            .deck-option {
+                position: absolute;
+                top: -85px;
+                left: 15px;
+                pointer-events: none;
+                cursor: pointer;
+                visibility: hidden;
+                transition: all 0.4s, transform 0.2s;
+                z-index: 10000;
+            }
+
+            .deck-option svg {
+                width: 60px;
+            }
+
+            .deck-option:hover {
+                transform: scale(1.2);
+            }
+
+            .cloud-provider-on-deck {
+                position: absolute;
+                left: 80px;
+                top: 20px;
+                height: 29px;
+                transition: all 0s !important;
+            }
+
+            .coming-soon {
+                opacity: 0.3;
+                pointer-events: none;
+            }
+
+            .coming-soon-text {
+                position: absolute;
+                left: 120px;
+                top: 55px;
+                width: 250px;
+                font-size: 18px;
+                font-style: italic;
+            }
+
             #navigation-bar {
                 position: absolute;
-                width: 100%;
+                width: 590px;
+                left: 0px;
                 top: -85px;
                 direction: rtl;
             }
@@ -184,7 +232,7 @@
                 text-align: left !important;
             }
 
-            .cloud-provider {
+            .cloud-provider-on-card {
                 position: absolute;
                 left: 20px;
                 top: 20px;
@@ -220,6 +268,27 @@
         <div id="centered-content">
             <!-- Navigation bar -->
             <div id="navigation-bar" class="unselectable">
+                <div id="deck" onClick="deckSelectionOpen()">
+                    <svg
+                        class="svg-container"
+                        xmlns="http://www.w3.org/2000/svg"
+                        xmlns:xlink="http://www.w3.org/1999/xlink"
+                        version="1.1"
+                        x="0px"
+                        y="0px"
+                        viewBox="0 0 100 125"
+                        enable-background="new 0 0 100 100"
+                        xml:space="preserve"
+                        fill="none"
+                        stroke="#b7b7a4"
+                        stroke-width="2"
+                    >
+                        <path
+                            d="M96.7,37.1c0.2-1.1-0.2-2.3-1.3-3.1L71.8,14.2c-1.3-1.1-3.3-1.7-5.4-1.7c-1.2,0-2.3,0.2-3.4,0.5L8.1,32.3  c-1.9,0.7-3.1,1.8-3.3,3.2c-0.2,1.1,0.3,2.3,1.3,3.1l23.6,19.8c1.3,1.1,3.3,1.7,5.4,1.7c1.2,0,2.3-0.2,3.4-0.5l54.9-19.2  C95.2,39.7,96.5,38.5,96.7,37.1 M98.3,41.8l0-2c-0.9,1.3-2.2,2.3-4,3L39.4,62.1c-1.3,0.5-2.8,0.7-4.3,0.7c-2.8,0-5.4-0.8-7.1-2.3  L4.4,40.7c-0.5-0.4-0.9-0.8-1.2-1.3v0.8c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,44.7,98.2,43.3,98.3,41.8 M98.3,47l0-3.1c-0.1,1.4-1.4,2.9-3.8,3.7L39.6,66.8c-3.9,1.4-9,0.8-11.5-1.3L4.6,45.7  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.9l0,5c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,49.9,98.3,48.4,98.3,47 M98.3,52.1l0,0.7l0-3.9c0,1.5-1.4,2.9-3.8,3.7L39.6,72c-3.9,1.4-9,0.8-11.5-1.3L4.6,50.9  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.1l0,4.2c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,55,98.3,53.6,98.3,52.1 M98.3,57.3l0,1.6l0-4.8c0,1.5-1.4,2.9-3.8,3.8L39.6,77.1c-3.9,1.4-9,0.8-11.5-1.3L4.6,56  c-0.9-0.7-1.3-1.6-1.3-2.4l0-1.2l0,3.6l0,0.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3L94.5,61  C97,60.2,98.3,58.8,98.3,57.3 M98.3,61.6l0-2.3c0,1.5-1.3,2.9-3.8,3.8L39.6,82.3c-3.9,1.4-9,0.8-11.5-1.3L4.6,61.2  c-0.9-0.8-1.3-1.6-1.3-2.4l0-0.4l0,2.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,64.5,98.3,63,98.3,61.6"
+                        />
+                    </svg>
+                </div>
+
                 <div class="navigation-item" id="navigation-item-user-data" title="User data" alt="User data" onClick="onToggleUserCard()">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
                         <path
@@ -277,7 +346,7 @@
             <div id="potemkin-card">
                 <div id="potemkin-card-inner-container">
                     <div id="potemkin-card-front-container">
-                        <img src="aws.svg" class="cloud-provider" />
+                        <img src="logo_aws.svg" class="cloud-provider-on-card" />
                         <div id="potemkin-card-front"></div>
                     </div>
                 </div>
@@ -289,7 +358,7 @@
                 <div id="card-right" class="unselectable" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
                 <div id="flip-card-inner-container">
                     <div id="flip-card-front-container">
-                        <img src="aws.svg" class="cloud-provider" />
+                        <img src="logo_aws.svg" class="cloud-provider-on-card" />
                         <div id="flip-card-front"></div>
                     </div>
                     <div id="flip-card-back-container">
@@ -307,6 +376,74 @@
                 </div>
                 <div id="user-data-card-text"></div>
             </div>
+
+            <!-- Deck option AWS -->
+            <div id="deck-option-aws" class="deck-option" onClick="deckSelectionClose()">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 100 125"
+                    enable-background="new 0 0 100 100"
+                    xml:space="preserve"
+                    fill="none"
+                    stroke="#e47911"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M96.7,37.1c0.2-1.1-0.2-2.3-1.3-3.1L71.8,14.2c-1.3-1.1-3.3-1.7-5.4-1.7c-1.2,0-2.3,0.2-3.4,0.5L8.1,32.3  c-1.9,0.7-3.1,1.8-3.3,3.2c-0.2,1.1,0.3,2.3,1.3,3.1l23.6,19.8c1.3,1.1,3.3,1.7,5.4,1.7c1.2,0,2.3-0.2,3.4-0.5l54.9-19.2  C95.2,39.7,96.5,38.5,96.7,37.1 M98.3,41.8l0-2c-0.9,1.3-2.2,2.3-4,3L39.4,62.1c-1.3,0.5-2.8,0.7-4.3,0.7c-2.8,0-5.4-0.8-7.1-2.3  L4.4,40.7c-0.5-0.4-0.9-0.8-1.2-1.3v0.8c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,44.7,98.2,43.3,98.3,41.8 M98.3,47l0-3.1c-0.1,1.4-1.4,2.9-3.8,3.7L39.6,66.8c-3.9,1.4-9,0.8-11.5-1.3L4.6,45.7  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.9l0,5c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,49.9,98.3,48.4,98.3,47 M98.3,52.1l0,0.7l0-3.9c0,1.5-1.4,2.9-3.8,3.7L39.6,72c-3.9,1.4-9,0.8-11.5-1.3L4.6,50.9  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.1l0,4.2c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,55,98.3,53.6,98.3,52.1 M98.3,57.3l0,1.6l0-4.8c0,1.5-1.4,2.9-3.8,3.8L39.6,77.1c-3.9,1.4-9,0.8-11.5-1.3L4.6,56  c-0.9-0.7-1.3-1.6-1.3-2.4l0-1.2l0,3.6l0,0.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3L94.5,61  C97,60.2,98.3,58.8,98.3,57.3 M98.3,61.6l0-2.3c0,1.5-1.3,2.9-3.8,3.8L39.6,82.3c-3.9,1.4-9,0.8-11.5-1.3L4.6,61.2  c-0.9-0.8-1.3-1.6-1.3-2.4l0-0.4l0,2.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,64.5,98.3,63,98.3,61.6"
+                    />
+                </svg>
+                <img src="logo_aws.svg" class="cloud-provider-on-deck" id="cloud-provider-on-deck-aws" />
+            </div>
+
+            <!-- Deck option Azure -->
+            <div id="deck-option-azure" class="deck-option coming-soon" onClick="deckSelectionClose()">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 100 125"
+                    enable-background="new 0 0 100 100"
+                    xml:space="preserve"
+                    fill="none"
+                    stroke="#008AD7"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M96.7,37.1c0.2-1.1-0.2-2.3-1.3-3.1L71.8,14.2c-1.3-1.1-3.3-1.7-5.4-1.7c-1.2,0-2.3,0.2-3.4,0.5L8.1,32.3  c-1.9,0.7-3.1,1.8-3.3,3.2c-0.2,1.1,0.3,2.3,1.3,3.1l23.6,19.8c1.3,1.1,3.3,1.7,5.4,1.7c1.2,0,2.3-0.2,3.4-0.5l54.9-19.2  C95.2,39.7,96.5,38.5,96.7,37.1 M98.3,41.8l0-2c-0.9,1.3-2.2,2.3-4,3L39.4,62.1c-1.3,0.5-2.8,0.7-4.3,0.7c-2.8,0-5.4-0.8-7.1-2.3  L4.4,40.7c-0.5-0.4-0.9-0.8-1.2-1.3v0.8c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,44.7,98.2,43.3,98.3,41.8 M98.3,47l0-3.1c-0.1,1.4-1.4,2.9-3.8,3.7L39.6,66.8c-3.9,1.4-9,0.8-11.5-1.3L4.6,45.7  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.9l0,5c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,49.9,98.3,48.4,98.3,47 M98.3,52.1l0,0.7l0-3.9c0,1.5-1.4,2.9-3.8,3.7L39.6,72c-3.9,1.4-9,0.8-11.5-1.3L4.6,50.9  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.1l0,4.2c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,55,98.3,53.6,98.3,52.1 M98.3,57.3l0,1.6l0-4.8c0,1.5-1.4,2.9-3.8,3.8L39.6,77.1c-3.9,1.4-9,0.8-11.5-1.3L4.6,56  c-0.9-0.7-1.3-1.6-1.3-2.4l0-1.2l0,3.6l0,0.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3L94.5,61  C97,60.2,98.3,58.8,98.3,57.3 M98.3,61.6l0-2.3c0,1.5-1.3,2.9-3.8,3.8L39.6,82.3c-3.9,1.4-9,0.8-11.5-1.3L4.6,61.2  c-0.9-0.8-1.3-1.6-1.3-2.4l0-0.4l0,2.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,64.5,98.3,63,98.3,61.6"
+                    />
+                </svg>
+                <img src="logo_azure.svg" class="cloud-provider-on-deck" id="cloud-provider-on-deck-azure" />
+                <div class="coming-soon-text" id="coming-soon-text-azure" style="color: #008ad7">(Coming soon)</div>
+            </div>
+
+            <!-- Deck option GCP -->
+            <div id="deck-option-gcp" class="deck-option coming-soon" onClick="deckSelectionClose()">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
+                    version="1.1"
+                    x="0px"
+                    y="0px"
+                    viewBox="0 0 100 125"
+                    enable-background="new 0 0 100 100"
+                    xml:space="preserve"
+                    fill="none"
+                    stroke="#F4B400"
+                    stroke-width="2"
+                >
+                    <path
+                        d="M96.7,37.1c0.2-1.1-0.2-2.3-1.3-3.1L71.8,14.2c-1.3-1.1-3.3-1.7-5.4-1.7c-1.2,0-2.3,0.2-3.4,0.5L8.1,32.3  c-1.9,0.7-3.1,1.8-3.3,3.2c-0.2,1.1,0.3,2.3,1.3,3.1l23.6,19.8c1.3,1.1,3.3,1.7,5.4,1.7c1.2,0,2.3-0.2,3.4-0.5l54.9-19.2  C95.2,39.7,96.5,38.5,96.7,37.1 M98.3,41.8l0-2c-0.9,1.3-2.2,2.3-4,3L39.4,62.1c-1.3,0.5-2.8,0.7-4.3,0.7c-2.8,0-5.4-0.8-7.1-2.3  L4.4,40.7c-0.5-0.4-0.9-0.8-1.2-1.3v0.8c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,44.7,98.2,43.3,98.3,41.8 M98.3,47l0-3.1c-0.1,1.4-1.4,2.9-3.8,3.7L39.6,66.8c-3.9,1.4-9,0.8-11.5-1.3L4.6,45.7  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.9l0,5c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C96.9,49.9,98.3,48.4,98.3,47 M98.3,52.1l0,0.7l0-3.9c0,1.5-1.4,2.9-3.8,3.7L39.6,72c-3.9,1.4-9,0.8-11.5-1.3L4.6,50.9  c-0.9-0.8-1.3-1.6-1.3-2.4l0-2.1l0,4.2c0,0,0,0,0,0l0,1c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,55,98.3,53.6,98.3,52.1 M98.3,57.3l0,1.6l0-4.8c0,1.5-1.4,2.9-3.8,3.8L39.6,77.1c-3.9,1.4-9,0.8-11.5-1.3L4.6,56  c-0.9-0.7-1.3-1.6-1.3-2.4l0-1.2l0,3.6l0,0.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3L94.5,61  C97,60.2,98.3,58.8,98.3,57.3 M98.3,61.6l0-2.3c0,1.5-1.3,2.9-3.8,3.8L39.6,82.3c-3.9,1.4-9,0.8-11.5-1.3L4.6,61.2  c-0.9-0.8-1.3-1.6-1.3-2.4l0-0.4l0,2.7c0,0.8,0.4,1.7,1.3,2.4l23.6,19.8c2.5,2.1,7.6,2.7,11.5,1.3l54.9-19.2  C97,64.5,98.3,63,98.3,61.6"
+                    />
+                </svg>
+                <img src="logo_gcp.svg" class="cloud-provider-on-deck" id="cloud-provider-on-deck-gcp" />
+                <div class="coming-soon-text" id="coming-soon-text-gcp" style="color: #5f6368">(Coming soon)</div>
+            </div>
         </div>
 
         <script src="name-generator.js" type="text/javascript" charset="UTF-8"></script>
@@ -317,7 +454,7 @@
             const PRIO_INCREASE_LATER = 10;
             const PRIO_INCREASE_SOON = 1;
             const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
-            const COOKIE_KEY = "cloudbite-userdata";
+            const LOCAL_STORAGE_KEY = "cloudbite-userdata";
 
             // State
             let flipped = false;
@@ -328,13 +465,24 @@
             let lastMoveCoordinates = null;
             let userData = null;
 
+            const disableButtons = function () {
+                document.getElementById("navigation-bar").style.opacity = "0.3";
+                document.getElementById("navigation-bar").style.pointerEvents = "none";
+                document.getElementById("action-bar").style.opacity = "0.3";
+                document.getElementById("action-bar").style.pointerEvents = "none";
+            };
+
+            const enableButtons = function () {
+                document.getElementById("navigation-bar").style.opacity = "1";
+                document.getElementById("navigation-bar").style.pointerEvents = "auto";
+                document.getElementById("action-bar").style.opacity = "1";
+                document.getElementById("action-bar").style.pointerEvents = "auto";
+            };
+
             const onToggleUserCard = function () {
                 if (document.getElementById("user-data-card").style.visibility == "visible") {
                     document.getElementById("user-data-card").style.visibility = "hidden";
-                    document.getElementById("navigation-bar").style.opacity = "1";
-                    document.getElementById("navigation-bar").style.pointerEvents = "auto";
-                    document.getElementById("action-bar").style.opacity = "1";
-                    document.getElementById("action-bar").style.pointerEvents = "auto";
+                    enableButtons();
                 } else {
                     const streakHits = userData.last100streak.reduce((a, b) => a + b, 0);
                     const streakLength = userData.last100streak.length;
@@ -349,10 +497,7 @@
                     (${streakHits} hits out of ${streakLength} attempts).
                     `;
                     document.getElementById("user-data-card").style.visibility = "visible";
-                    document.getElementById("navigation-bar").style.opacity = "0.3";
-                    document.getElementById("navigation-bar").style.pointerEvents = "none";
-                    document.getElementById("action-bar").style.opacity = "0.3";
-                    document.getElementById("action-bar").style.pointerEvents = "none";
+                    disableButtons();
                 }
             };
 
@@ -538,7 +683,7 @@
                         userData.prioForHash[c.hash] = c.prio;
                     }
                 }
-                localStorage.setItem(COOKIE_KEY, JSON.stringify(userData));
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
             };
 
             const getMinPrio = function (excludeCard) {
@@ -556,7 +701,7 @@
             };
 
             const initializeUserSession = function () {
-                userData = localStorage.getItem(COOKIE_KEY);
+                userData = localStorage.getItem(LOCAL_STORAGE_KEY);
                 if (userData) {
                     userData = JSON.parse(userData);
                 } else {
@@ -566,7 +711,7 @@
                         countCardsSeen: 0,
                         last100streak: [],
                     };
-                    localStorage.setItem(COOKIE_KEY, JSON.stringify(userData));
+                    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
                 }
                 for (let i = 0; i < flipcards.length; i++) {
                     const c = flipcards[i];
@@ -641,6 +786,57 @@
                 document.getElementById("potemkin-card-front-container").style.visibility = "hidden";
             };
 
+            const deckSelectionOpen = function () {
+                throwAwayCard(-260, -270);
+                disableButtons();
+                // aws deck option
+                document.getElementById("deck-option-aws").style.top = "0px";
+                document.getElementById("deck-option-aws").style.visibility = "visible";
+                window.setTimeout(() => {
+                    document.getElementById("deck-option-aws").style.pointerEvents = "auto";
+                }, 400);
+                document.getElementById("cloud-provider-on-deck-aws").style.visibility = "visible";
+                // azure deck option
+                document.getElementById("deck-option-azure").style.top = "85px";
+                document.getElementById("deck-option-azure").style.visibility = "visible";
+                document.getElementById("cloud-provider-on-deck-azure").style.visibility = "visible";
+                document.getElementById("coming-soon-text-azure").style.visibility = "visible";
+                // gcp deck option
+                document.getElementById("deck-option-gcp").style.top = "170px";
+                document.getElementById("deck-option-gcp").style.visibility = "visible";
+                document.getElementById("cloud-provider-on-deck-gcp").style.visibility = "visible";
+                document.getElementById("coming-soon-text-gcp").style.visibility = "visible";
+                // Rotate card front way up while it's going into the deck.
+                if (flipped) {
+                    // Note: we don't want to set permanentRotation to 0 because it might flap like a hummingbird.
+                    permanentRotation -= 180;
+                    flipped = false;
+                }
+            };
+
+            const deckSelectionClose = function (choice) {
+                renderRealCard();
+                enableButtons();
+                // aws deck option
+                document.getElementById("deck-option-aws").style.top = "-85px"; /* 0.4s transition */
+                document.getElementById("deck-option-aws").style.visibility = "hidden"; /* 0.4s transition */
+                document.getElementById("deck-option-aws").style.pointerEvents = "none";
+                document.getElementById("cloud-provider-on-deck-aws").style.visibility = "hidden"; /* 0s transition */
+                // azure deck option
+                document.getElementById("deck-option-azure").style.top = "-85px"; /* 0.4s transition */
+                document.getElementById("deck-option-azure").style.visibility = "hidden"; /* 0.4s transition */
+                document.getElementById("cloud-provider-on-deck-azure").style.visibility = "hidden"; /* 0s transition */
+                document.getElementById("coming-soon-text-azure").style.visibility = "hidden"; /* 0s transition */
+                // gcp deck option
+                document.getElementById("deck-option-gcp").style.top = "-85px"; /* 0.4s transition */
+                document.getElementById("deck-option-gcp").style.visibility = "hidden"; /* 0.4s transition */
+                document.getElementById("cloud-provider-on-deck-gcp").style.visibility = "hidden"; /* 0s transition */
+                document.getElementById("coming-soon-text-gcp").style.visibility = "hidden"; /* 0s transition */
+                // Animate card back into place
+                document.getElementById("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
+                rotate(0);
+            };
+
             const updateStreak = function (latestVal) {
                 userData.last100streak.push(latestVal);
                 userData.last100streak = userData.last100streak.slice(Math.max(0, userData.last100streak.length - 30));
@@ -683,5 +879,6 @@
             renderRealCard();
             document.getElementById("flip-card-outer-container").style.visibility = "visible";
         </script>
+        <script async defer data-domain="cloudbite.attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
     </body>
 </html>

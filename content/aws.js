@@ -149,7 +149,7 @@ const flipcards = [
     },
     {
         "q": "Can you leverage spot pricing in ECS?",
-        "a": "Yes. If you use Fargate, you can leverage Fargate Spot Tasks. If you use EC2 fleet, you can leverage EC2 spot instances."
+        "a": "If you use Fargate, you can leverage Fargate Spot Tasks. If you use EC2 fleet, you can leverage EC2 spot instances."
     },
     {
         "q": "In the context of ECS,<br>what does <i>Container Agent</i> mean?",
@@ -224,4 +224,40 @@ const flipcards = [
         "q": "How should you serve static web assets on AWS?",
         "a": "S3 and CloudFront. Static web assets should be stored in S3, and distributed with CloudFront (AWS' Content Delivery Network)."
     },
+    {
+        "q": "Does S3 have a directory/file structure?",
+        "a": `
+                Technically, S3 does not have a directory/file structure. S3 is object storage where objects are stored in buckets, in a flat hierarchy, identified only by their key. <b>However</b>, you can represent file paths with the key. For example, a key might be \"<i>assets/logo.svg</i>\". If you use the AWS Console to list your S3 objects, these keys will be represented as directories and files for your convenience. Furthermore, S3 buckets can be mounted to EC2 instances as file system volumes.
+              
+              `
+    },
+    {
+        "q": "You create an S3 bucket. Where does it exist?",
+        "a": `<ul>
+                <li>S3 buckets exist outside your VPCs</li>
+                <li>S3 buckets exist within a region<br>(cross-region replication is also possible)</li>
+                <li>S3 bucket names are globally unique<br>(like domain names)</li>
+              </ul>
+            `
+    },
+    {
+        "q": "Where can you configure access control to your S3 bucket?",
+        "a": "S3 bucket access control is typically configured in <i>bucket policies</i>. However, access control is sometimes configured elsewhere, such as in <i>VPC endpoint policies</i> or in <i>access control lists</i>."
+    },
+    {
+        "q": "Provide an example of S3 lifecycle management.",
+        "a": "S3 lifecycle management might be used to automatically move objects from Standard tier to Glacier after 30 days from creation, and permanently deleted after 90 days."
+    },
+    {
+        "q": "List S3 tiers.",
+        "a": `S3 tiers
+        <br><br><ul>
+                    <li><b>Standard</b>: highly available and durable, replicated across at least 3 AZs</li>
+                    <li><b>IA (Standard Infrequently Accessed)</b>: reduced storage cost, additional fees for retrieval</li>
+                    <li><b>One Zone IA</b>: no replication to multiple AZs</li>
+                    <li><b>Intelligent Tiering</b>: automatically move objects between Standard and IA to optimize costs</li>
+                    <li><b>Glacier</b> and <b>Glacier Deep Archive</b>: lowest cost, retrieval time options vary from minutes to hours. Retrieval capacity is not guaranteed unless you reserve retrieval capacity in advance.</li>
+        </ul>
+        `
+    }
 ]
