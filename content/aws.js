@@ -210,7 +210,7 @@ const flipcards = [
         "a": "Step Functions is AWS-managed service for orchestrating several microservices to work together. Simple Workflow Service is a legacy alternative to Step Functions."
     },
     {
-        "q": "Compare Inspector, GuardDuty, Config and Shield.",
+        "q": "Summarize Inspector, GuardDuty, Config and Shield.",
         "a": `
                 <ul>
                     <li><b>Inspector</b> provides rule-based vulnerability discovery</li>
@@ -219,5 +219,9 @@ const flipcards = [
                     <li><b>Shield</b> is a DDoS protection service</li>
                 </ul>
              `
+    },
+    {
+        "q": "How should you serve static web assets on AWS?",
+        "a": "S3 and CloudFront. Static web assets should be stored in S3, and distributed with CloudFront (AWS' Content Delivery Network)."
     },
 ]

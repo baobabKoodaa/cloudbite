@@ -198,7 +198,7 @@
                 top: 0px;
                 left: 0px;
                 width: 560px;
-                height: 500px;
+                height: 360px;
                 perspective: 2000px;
                 border-radius: 20px;
                 box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
@@ -209,20 +209,9 @@
 
             #user-data-card-close-button {
                 position: absolute;
-                left: 260px;
-                bottom: 30px;
-                border-width: 5px;
-                border-style: solid;
-                border-color: #b7b7a4;
-                color: #b7b7a4;
-                font-weight: bold;
-                border-radius: 10px;
-                padding: 10px 30px 10px 30px;
+                top: 10px;
+                right: 10px;
                 cursor: pointer;
-                transition: transform 0.2s;
-            }
-            #user-data-card-close-button:hover {
-                transform: scale(1.2);
             }
         </style>
     </head>
@@ -231,7 +220,7 @@
         <div id="centered-content">
             <!-- Navigation bar -->
             <div id="navigation-bar" class="unselectable">
-                <div class="navigation-item" title="User data" alt="User data" onClick="onToggleUserCard()">
+                <div class="navigation-item" id="navigation-item-user-data" title="User data" alt="User data" onClick="onToggleUserCard()">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
                         <path
                             stroke-linecap="round"
@@ -311,8 +300,12 @@
 
             <!-- User data card -->
             <div id="user-data-card">
+                <div id="user-data-card-close-button" onClick="onToggleUserCard()">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
                 <div id="user-data-card-text"></div>
-                <div id="user-data-card-close-button" onClick="onToggleUserCard()">OK</div>
             </div>
         </div>
 
@@ -338,7 +331,10 @@
             const onToggleUserCard = function () {
                 if (document.getElementById("user-data-card").style.visibility == "visible") {
                     document.getElementById("user-data-card").style.visibility = "hidden";
-                    document.getElementById("action-bar").style.visibility = "visible";
+                    document.getElementById("navigation-bar").style.opacity = "1";
+                    document.getElementById("navigation-bar").style.pointerEvents = "auto";
+                    document.getElementById("action-bar").style.opacity = "1";
+                    document.getElementById("action-bar").style.pointerEvents = "auto";
                 } else {
                     const streakHits = userData.last100streak.reduce((a, b) => a + b, 0);
                     const streakLength = userData.last100streak.length;
@@ -353,7 +349,10 @@
                     (${streakHits} hits out of ${streakLength} attempts).
                     `;
                     document.getElementById("user-data-card").style.visibility = "visible";
-                    document.getElementById("action-bar").style.visibility = "hidden";
+                    document.getElementById("navigation-bar").style.opacity = "0.3";
+                    document.getElementById("navigation-bar").style.pointerEvents = "none";
+                    document.getElementById("action-bar").style.opacity = "0.3";
+                    document.getElementById("action-bar").style.pointerEvents = "none";
                 }
             };
 
@@ -364,7 +363,7 @@
                 };
             };
 
-            // onMouseUpCard event needs to be triggered before onMouseUpAnywhere!
+            // Note: onMouseUpCard event needs to be triggered before onMouseUpAnywhere!
             const onMouseUpCard = function (delta) {
                 if (mouseDownCard && !mouseDragging) {
                     flip(delta);
@@ -376,6 +375,10 @@
                 if (!mouseDragging) {
                     return;
                 }
+                stopDragging();
+            };
+
+            const stopDragging = function () {
                 mouseDragging = false;
                 // Since we are no longer dragging we want to re-enable animations.
                 document.getElementById("flip-card-outer-container").style.transition = `transform 0.4s`;
@@ -444,9 +447,18 @@
             document.addEventListener("mousemove", (e) => {
                 onMouseMove(e);
             });
-            document.addEventListener("touchmove", (e) => {
-                onMouseMove(e);
-            });
+            document.addEventListener(
+                "touchmove",
+                (e) => {
+                    onMouseMove(e);
+                    e.preventDefault();
+                },
+                { passive: false }
+                // This is a workaround to an issue that I noticed in Chrome but ONLY WHEN devtools is NOT open!
+                // If we don't preventDefault, then for some reason the touchmove events trigger infrequently
+                // and the experience feels laggy. So we want to preventDefault, and in order to do that
+                // we need to add the "passive: false". Not sure why any of this works but it does.
+            );
 
             // Event listeners for left-mouse-up-anywhere or stop-dragging-with-touchscreen-anywhere
             document.addEventListener("mouseup", (e) => {
