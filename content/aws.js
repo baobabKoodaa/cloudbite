@@ -23,7 +23,13 @@ const flipcards = [
     },
     {
         "q": "What kind of volumes can you mount on an EC2 instance?",
-        "a": "EC2 volume options<br><br><ul><li>Instance store (ephemeral)</li><li>EBS (Elastic Block Store, persistent)</li><li>EFS (Elastic File System, also persistent, can be concurrently mounted by multiple instances)</li></ul>"
+        "a": `EC2 volume options<br><br>
+        <ul>
+            <li>Instance store (ephemeral)</li>
+            <li>EBS (Elastic Block Store, persistent)</li>
+            <li>EFS (Elastic File System, also persistent, can be concurrently mounted by multiple instances)</li>
+        </ul>
+        `
     },
     {
         "q": "Summarize EC2 placement groups.",
@@ -222,7 +228,7 @@ const flipcards = [
     },
     {
         "q": "How should you serve static web assets on AWS?",
-        "a": "S3 and CloudFront. Static web assets should be stored in S3, and distributed with CloudFront (AWS' Content Delivery Network)."
+        "a": "Static web assets should be stored in <b>S3</b> and distributed with <b>CloudFront</b> (a Content Delivery Network)."
     },
     {
         "q": "Does S3 have a directory/file structure?",
@@ -242,7 +248,7 @@ const flipcards = [
     },
     {
         "q": "Where can you configure access control to your S3 bucket?",
-        "a": "S3 bucket access control is typically configured in <i>bucket policies</i>. However, access control is sometimes configured elsewhere, such as in <i>VPC endpoint policies</i> or in <i>access control lists</i>."
+        "a": "S3 bucket access control is typically configured in <i>bucket policies</i>. However, access control to S3 buckets can sometimes be configured elsewhere, such as in <i>VPC endpoint policies</i> or in <i>access control lists</i>."
     },
     {
         "q": "Provide an example of S3 lifecycle management.",
@@ -259,5 +265,52 @@ const flipcards = [
                     <li><b>Glacier</b> and <b>Glacier Deep Archive</b>: lowest cost, retrieval time options vary from minutes to hours. Retrieval capacity is not guaranteed unless you reserve retrieval capacity in advance.</li>
         </ul>
         `
+    },
+    {
+        "q": "What's the simplest way to move an EC2 instance to a different physical host?",
+        "a": "You can move an EC2 instance to a new host by stopping and starting the instance."
+    },
+    {
+        "q": "Can you mount the same EBS volume concurrently to multiple EC2 instances?",
+        "a": "Typically you would mount an EBS volume to only one EC2 instance at a time. You can technically mount an EBS volume to multiple instances with EBS Multi-Attach, but it comes with a lot of restrictions. <b>Usually an EFS volume is preferred for this kind of use case.</b>"
+    },
+    {
+        "q": "You have increased EBS volume capacity, but when you SSH into the instance, you don't see the extra space. Why?",
+        "a": "After increasing EBS volume capacity, you need to extend the volume's file system to gain access to the extra space."
+    },
+    {
+        "q": "Users are complaining that your application is slow while its Linux instances are being patched with Systems Manager Patch Manager. How should you remediate the situation?",
+        "a": "Systems Manager Patch Manager can be configured to patch only a small portion of instances in the patch group at a time."
+    },
+    {
+        "q": "You try to log into your EC2 instance with Systems Manager Session Manager, but the instance is not listed. What could be wrong?",
+        "a": "If the instance is using a custom AMI, you may need to manually add IAM role and permissions to the instance profile and install the SSM agent on the instance."
+    },
+    {
+        "q": "You've set up a CloudFormation stack for deployments, but another developer made changes to the stack via the AWS Console. What should you do?",
+        "a": "You can use <i>drift detection</i> to identify differences between the CloudFormation template and the deployed stack, and then update the template accordingly and redeploy the stack."
+    },
+    {
+        "q": "How can you reuse the same CloudFormation template to deploy to multiple regions?",
+        "a": "You can use CloudFormation parameters to set custom values and reference the parameters with <i>!Ref</i>."
+    },
+    {
+        "q": "Can you use the same AMI in different regions?",
+        "a": "AMIs are region-specific, but the IDs share a global namespace. You can copy an AMI to another region, but it will receive a new AMI ID."
+    },
+    {
+        "q": "How can your EC2 instances connect to an S3 bucket within the same region without crossing the internet?",
+        "a": "You can use a <b>NAT gateway</b> or a <b>VPC endpoint</b> to route traffic from EC2 instances directly to an S3 bucket without crossing the internet."
+    },
+    {
+        "q": "How can you make a website marketing campaign visible only to users of a specific country?",
+        "a": "You can use Route53 geolocation routing policy to route traffic from country A to resource X, and traffic from other countries to resource Y."
+    },
+    {
+        "q": "Can you encrypt an unencrypted RDS database?",
+        "a": "You can not encrypt an unencrypted RDS database on the fly. You can create a snapshot of the database, then copy the snapshot with \"enable encryption\" checked, and finally, restore a new RDS instance from the encrypted snapshot."
+    },
+    {
+        
     }
 ]

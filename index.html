@@ -165,6 +165,23 @@
                 font-style: italic;
             }
 
+            #add-card-button {
+                position: absolute;
+                left: 85px;
+                cursor: pointer;
+                visibility: hidden;
+            }
+
+            #add-card-input {
+                position: fixed;
+                top: 0px;
+                right: 0px;
+                width: 100%;
+                height: 100px;
+                resize: vertical;
+                visibility: hidden;
+            }
+
             #navigation-bar {
                 position: absolute;
                 width: 590px;
@@ -182,6 +199,7 @@
             #action-bar {
                 position: absolute;
                 top: 400px;
+                left: 10px;
                 z-index: 12;
             }
 
@@ -268,6 +286,7 @@
         <div id="centered-content">
             <!-- Navigation bar -->
             <div id="navigation-bar" class="unselectable">
+                <!-- Deck button -->
                 <div id="deck" onClick="deckSelectionOpen()">
                     <svg
                         class="svg-container"
@@ -289,6 +308,14 @@
                     </svg>
                 </div>
 
+                <!-- Add new card button -->
+                <div id="add-card-button" onClick="toggleAddCardInput()">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                </div>
+
+                <!-- User data button-->
                 <div class="navigation-item" id="navigation-item-user-data" title="User data" alt="User data" onClick="onToggleUserCard()">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
                         <path
@@ -299,6 +326,8 @@
                         />
                     </svg>
                 </div>
+
+                <!-- About (i) button -->
                 <a href="about.html" target="_blank">
                     <div class="navigation-item" title="About Cloudbite" alt="About Cloudbite">
                         <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
@@ -446,6 +475,13 @@
             </div>
         </div>
 
+        <textarea id="add-card-input">
+            {
+                "q": `Front side question`,
+                "a": `Back side answer`
+            }
+        </textarea>
+
         <script src="name-generator.js" type="text/javascript" charset="UTF-8"></script>
         <script src="content/aws.js" type="text/javascript" charset="UTF-8"></script>
         <script>
@@ -575,6 +611,10 @@
             document.addEventListener("keydown", (e) => {
                 if (document.getElementById("user-data-card").style.visibility == "visible") {
                     // Disable keyboard shortcuts while the user data card is open.
+                    return;
+                }
+                if (document.getElementById("add-card-input").style.visibility == "visible") {
+                    // Disable keyboard shortcuts while the add-new-card input is open.
                     return;
                 }
                 if (e.code === "ArrowRight" || e.code === "ArrowUp") {
@@ -811,6 +851,7 @@
                     // Note: we don't want to set permanentRotation to 0 because it might flap like a hummingbird.
                     permanentRotation -= 180;
                     flipped = false;
+                    rotate(0);
                 }
             };
 
@@ -874,10 +915,46 @@
                 saveStateToLocalStorage();
             };
 
+            // Initial setup
             initializeUserSession();
             changeCurrentCard();
             renderRealCard();
             document.getElementById("flip-card-outer-container").style.visibility = "visible";
+
+            // Enable new-card-preview when running locally
+            if (document.location.origin.startsWith("file")) {
+                document.getElementById("add-card-button").style.visibility = "visible";
+            }
+
+            const toggleAddCardInput = function () {
+                const e = document.getElementById("add-card-input");
+                if (e.style.visibility === "visible") {
+                    e.style.visibility = "hidden";
+                    // Reset card
+                    document.getElementById("flip-card-front").innerHTML = currentCard.q;
+                    document.getElementById("flip-card-back").innerHTML = currentCard.a;
+                } else {
+                    e.style.visibility = "visible";
+                    renderPreviewCard();
+                }
+            };
+
+            const renderPreviewCard = function () {
+                const text = document.getElementById("add-card-input").value;
+                // Note: yes, we use eval here, but everything is local, so the user can only hack themselves.
+                // We have to use eval, because it works with multi-line ` delimited strings, unlike JSON parser.
+                const previewCard = eval("(" + text + ")");
+                document.getElementById("flip-card-front").innerHTML = previewCard.q;
+                document.getElementById("flip-card-back").innerHTML = previewCard.a;
+            };
+
+            document.getElementById("add-card-input").addEventListener(
+                "input",
+                () => {
+                    renderPreviewCard();
+                },
+                false
+            );
         </script>
         <script async defer data-domain="cloudbite.attejuvonen.fi" src="https://plausible.io/js/plausible.js"></script>
     </body>
