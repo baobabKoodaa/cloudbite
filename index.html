@@ -167,9 +167,10 @@
 
             #add-card-button {
                 position: absolute;
-                left: 85px;
+                left: 95px;
                 cursor: pointer;
                 visibility: hidden;
+                transform: rotateZ(90deg);
             }
 
             #add-card-input {
@@ -221,6 +222,11 @@
                 width: 120px;
                 margin: 35px;
                 cursor: pointer;
+            }
+            #abi-soon {
+                /* Fix issue caused by different SVGs having different amount of left/right whitespace. */
+                margin-left: 40px;
+                margin-right: 30px;
             }
             .svg-container {
                 width: 60px;
@@ -287,7 +293,7 @@
             <!-- Navigation bar -->
             <div id="navigation-bar" class="unselectable">
                 <!-- Deck button -->
-                <div id="deck" onClick="deckSelectionOpen()">
+                <div id="deck" onClick="deckSelectionOpen()" alt="Select deck" title="Select deck">
                     <svg
                         class="svg-container"
                         xmlns="http://www.w3.org/2000/svg"
@@ -309,9 +315,14 @@
                 </div>
 
                 <!-- Add new card button -->
-                <div id="add-card-button" onClick="toggleAddCardInput()">
+                <div id="add-card-button" onClick="toggleAddCardInput()" alt="Create card" title="Create card">
                     <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                        />
                     </svg>
                 </div>
 
@@ -477,7 +488,7 @@
 
         <textarea id="add-card-input">
             {
-                "q": `Front side question`,
+                "q": `Front side question<br><br>(please note that this is just a preview, there is no save-your-card functionality yet - you have to manually copypaste the card into a file to save it)`,
                 "a": `Back side answer`
             }
         </textarea>
@@ -930,12 +941,14 @@
                 const e = document.getElementById("add-card-input");
                 if (e.style.visibility === "visible") {
                     e.style.visibility = "hidden";
+                    enableButtons();
                     // Reset card
                     document.getElementById("flip-card-front").innerHTML = currentCard.q;
                     document.getElementById("flip-card-back").innerHTML = currentCard.a;
                 } else {
                     e.style.visibility = "visible";
                     renderPreviewCard();
+                    disableButtons();
                 }
             };
 

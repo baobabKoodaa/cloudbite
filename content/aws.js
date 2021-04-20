@@ -311,6 +311,80 @@ const flipcards = [
         "a": "You can not encrypt an unencrypted RDS database on the fly. You can create a snapshot of the database, then copy the snapshot with \"enable encryption\" checked, and finally, restore a new RDS instance from the encrypted snapshot."
     },
     {
+        "q": `Why does AWS KMS use <i>envelope encryption</i> where a <i>master key</i> is used to encrypt <i>data keys</i> which are used to encrypt data?`,
+        "a": `AWS KMS uses <i>envelope encryption</i> to make it easier to rotate the master key. If the master key was used to encrypt data, then a key rotation would require decrypting and re-encrypting all of the data. But when the data is encrypted with a data key, master key can be changed without changing the data key, so there is no need to re-encrypt the data. Only the data key needs to be re-encrypted.`
+    },
+    {
+        "q": `List S3 object properties.`,
+        "a": `S3 object properties<br><br>
+            <ul>
+            <li><b>Key</b>: you can locate an object if you know its bucket and key (and version id, if versioning for the bucket is turned on)</li>
+            <li><b>Value</b>: data (file content)</li>
+            <li><b>Metadata</b>: e.g. version, last-modified, etc. (user-defined metadata is also possible)</li>
+            </ul>
+
+            `
+    },
+    {
+        "q": "Some of your users in different parts of the world are complaining about slow upload speeds to your S3 bucket. What can you do about it?",
+        "a": "You can use <b>transfer acceleration</b> to improve upload speeds to S3. With this service, your users wouldn't upload directly to S3. Instead, you would give them a distinct URL for CloudFront's distributed edge locations. Thus, a user would upload to their nearest CloudFront edge location, and the file would be transferred to S3 via AWS' internal networks."
+    },
+    {
+        "q": `How can you restrict access to an S3 bucket such that it can only be accessed through CloudFront?`,
+        "a": `Create <i>Origin Access Identity</i> (OAI) for your CloudFront distribution and configure S3 bucket policy to restrict access for everyone except the OAI.`
+    },
+    {
+        "q": "Evaluate the durability and availability of EBS volumes.",
+        "a": "EBS volumes are replicated to 2 devices within the same Availability Zone. Thus, an individual device failure should not cause loss of data, but an availability zone may have a temporary outage."
+    },
+    {
+        "q": "You need to occasionally mount an EBS volume from multiple availability zones. What should you do?",
+        "a": "EBS volumes can be mounted only by EC2 instances running in the same availability zone. If you need access from multiple availability zones, you should consider EFS volumes, which are regional."
+    },
+    {
+        "q": "Your application is doing a large number of read and write operations. You are running into performance issues with your EBS volume, which is using a General Purpose SSD disk. Can you improve performance without service interruptions?",
+        "a": "In order to support a large number of read and write operations, you should change your EBS volume type to Provisioned IOPS SSD. AWS supports live configuration changes to EBS volume type, which means you can change the underlying device type without a service interruption."
+    },
+    {
+        "q": "What advantages does EFS provide over EBS?",
+        "a": `
+            EFS advantages over EBS
+            <br><br><ul>
+            <li>Storage capacity scales in/out based on volume of data stored</li>
+            <li>Multiple EC2 instances can mount a single EFS volume concurrently (instances & volume must be in the same VPC)</li>
+            <li>Data is stored across multiple AZs within a region</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Can you use read replicas to improve the availability of your RDS database?",
+        "a": `
+            <ul>
+                <li>You can reduce load on your primary database instance by creating read replicas and directing read queries to them. However, a read replica can not be promoted to primary database instance.</li>
+                <li>You can configure <b>Multi-AZ</b> setup for your RDS to increase availability. With Multi-AZ, a standby copy of your database is kept in sync, and promoted to primary database if needed.</li>
+                <li>According to AWS exam terminology, a read replica improves performance, not availability.</i>
+            </ul>
+        `
+    },
+    {
+        "q": "What options do you have for running a PostgreSQL database on AWS?",
+        "a": `PostgreSQL on AWS<br><br>
+            <ul>
+                <li><b>EC2</b>: run the database on an EC2 instance, manage the database by yourself</li>
+                <li><b>RDS</b>: allow AWS to manage the database instances for you</li>
+                <li><b>Aurora</b>: AWS' proprietary database service, which has PostgreSQL-compatibility, and promises improved performance and less configuration overhead. Aurora is also part of RDS.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "What are common approaches to improving RDS database performance?",
+        "a": `RDS database performance<br><br>
+            <ul>
+                <li><b>Upsized instances</b> (vertical scaling): beefier instances can handle more load.</li>
+                <li><b>Read replicas</b> (horizontal scaling): reduce load on the primary database instance by directing read queries to read replicas.</li>
+                <li><b>Caches</b>: increase caching so that fewer requests reach the database. Architectures are often designed with ElastiCache in front of the database. Your web application might also cache some responses, and static content can be offloaded entirely to S3 and CloudFront.</li>
+            </ul>
         
+        `
     }
 ]
