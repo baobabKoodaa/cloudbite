@@ -659,14 +659,18 @@
             document.addEventListener(
                 "touchmove",
                 (e) => {
-                    onMouseMove(e);
-                    e.preventDefault();
+                    if (mouseDownCard) {
+                        onMouseMove(e);
+                        e.preventDefault();
+                    }
                 },
-                { passive: false }
-                // This is a workaround to an issue that I noticed in Chrome but ONLY WHEN devtools is NOT open!
+                // Workaround to an issue that I noticed in Chrome but ONLY WHEN devtools is NOT open!
                 // If we don't preventDefault, then for some reason the touchmove events trigger infrequently
                 // and the experience feels laggy. So we want to preventDefault, and in order to do that
                 // we need to add the "passive: false". Not sure why any of this works but it does.
+                // Note that we only want to preventDefault went card is being dragged, otherwise we
+                // prevent touch screen devices from zooming with touch motions.
+                { passive: false }
             );
 
             // Event listeners for left-mouse-up-anywhere or stop-dragging-with-touchscreen-anywhere
