@@ -228,7 +228,7 @@ const flipcards = [
     },
     {
         "q": "How should you serve static web assets on AWS?",
-        "a": "Static web assets should be stored in <b>S3</b> and distributed with <b>CloudFront</b> (a Content Delivery Network)."
+        "a": "Static web assets should be stored in <b>S3</b> and distributed with <b>CloudFront</b>."
     },
     {
         "q": "Does S3 have a directory/file structure?",
@@ -252,7 +252,7 @@ const flipcards = [
     },
     {
         "q": "Provide an example of S3 lifecycle management.",
-        "a": "S3 lifecycle management might be used to automatically move objects from Standard tier to Glacier after 30 days from creation, and permanently deleted after 90 days."
+        "a": "S3 lifecycle management might be used to automatically move objects from Standard tier to Glacier after 30 days from creation, and permanently delete objects after 90 days."
     },
     {
         "q": "List S3 tiers.",
@@ -382,7 +382,7 @@ const flipcards = [
             <ul>
                 <li><b>Upsized instances</b> (vertical scaling): beefier instances can handle more load.</li>
                 <li><b>Read replicas</b> (horizontal scaling): reduce load on the primary database instance by directing read queries to read replicas.</li>
-                <li><b>Caches</b>: increase caching so that fewer requests reach the database. Architectures are often designed with ElastiCache in front of the database. Your web application might also cache some responses, and static content can be offloaded entirely to S3 and CloudFront.</li>
+                <li><b>Caches</b>: increase caching so that fewer requests reach the database. Architectures are often designed with ElastiCache in front of RDS. Your web application might also cache some responses, and static content can be offloaded entirely to S3 and CloudFront.</li>
             </ul>
         
         `
