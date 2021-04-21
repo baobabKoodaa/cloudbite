@@ -419,7 +419,7 @@
             </div>
 
             <!-- Deck option AWS -->
-            <div id="deck-option-aws" class="deck-option" onClick="deckSelectionClose()">
+            <div id="deck-option-aws" class="deck-option" onClick="deckSelectionClose('aws')">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -497,6 +497,13 @@
         <script src="name-generator.js" type="text/javascript" charset="UTF-8"></script>
         <script src="content/aws.js" type="text/javascript" charset="UTF-8"></script>
         <script>
+            flipcards = [];
+            for (let i = 0; i < aws_cards.length; i++) {
+                const card = aws_cards[i];
+                card.deck = "aws";
+                flipcards.push(card);
+            }
+
             // Constants
             const PRIO_INITIAL = 1000;
             const PRIO_INCREASE_LATER = 10;
@@ -505,6 +512,7 @@
             const LOCAL_STORAGE_KEY = "cloudbite-userdata";
 
             // State
+            let currentDeck = "aws";
             let flipped = false;
             let currentCard = null;
             let permanentRotation = 0;
@@ -792,6 +800,9 @@
                 let minCard = null;
                 for (let i = 0; i < flipcards.length; i++) {
                     const card = flipcards[i];
+                    if (card.deck != currentDeck) {
+                        continue;
+                    }
                     const prio = card.prio + Math.random(); // Random (between 0-1) is useful to break ties (shuffle).
                     if (prio < minPrio) {
                         minPrio = prio;
@@ -872,26 +883,30 @@
             };
 
             const deckSelectionClose = function (choice) {
-                renderRealCard();
-                enableButtons();
-                // aws deck option
+                // set deck and draw new currentCard from deck
+                currentDeck = choice;
+                changeCurrentCard();
+                // animate aws deck option
                 get("deck-option-aws").style.top = "-85px"; /* 0.4s transition */
                 get("deck-option-aws").style.visibility = "hidden"; /* 0.4s transition */
                 get("deck-option-aws").style.pointerEvents = "none";
                 get("cloud-provider-on-deck-aws").style.visibility = "hidden"; /* 0s transition */
-                // azure deck option
+                // animate azure deck option
                 get("deck-option-azure").style.top = "-85px"; /* 0.4s transition */
                 get("deck-option-azure").style.visibility = "hidden"; /* 0.4s transition */
                 get("cloud-provider-on-deck-azure").style.visibility = "hidden"; /* 0s transition */
                 get("coming-soon-text-azure").style.visibility = "hidden"; /* 0s transition */
-                // gcp deck option
+                // animate gcp deck option
                 get("deck-option-gcp").style.top = "-85px"; /* 0.4s transition */
                 get("deck-option-gcp").style.visibility = "hidden"; /* 0.4s transition */
                 get("cloud-provider-on-deck-gcp").style.visibility = "hidden"; /* 0s transition */
                 get("coming-soon-text-gcp").style.visibility = "hidden"; /* 0s transition */
-                // Animate card back into place
+                // animate card back into place
                 get("flip-card-outer-container").style.transform = `translate(0px, 0px)`;
                 rotate(0);
+                renderRealCard();
+                // re-enable buttons
+                enableButtons();
             };
 
             const updateStreak = function (latestVal) {
