@@ -765,6 +765,7 @@
             };
 
             const initializeUserSession = function () {
+                // Load userData from localStorage or initialize it for new user.
                 userData = localStorage.getItem(LOCAL_STORAGE_KEY);
                 if (userData) {
                     userData = JSON.parse(userData);
@@ -777,16 +778,27 @@
                     };
                     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
                 }
+                // Adjust flipcards according to prios in userData.
+                let minPrioInUserData = Number.POSITIVE_INFINITY;
                 for (let i = 0; i < flipcards.length; i++) {
                     const c = flipcards[i];
                     c.hash = hash(c);
                     c.prio = PRIO_INITIAL;
                     if (c.hash in userData.prioForHash) {
                         c.prio = userData.prioForHash[c.hash];
+                        minPrioInUserData = c.prio;
                     }
                     if (!c.prio) {
                         // Case: card was "trashed", JSONified cookie had undefined/null.
                         c.prio = Number.POSITIVE_INFINITY;
+                    }
+                }
+                // Deal with special case where new cards are added after old cards have drifted far away in userData prios.
+                if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData != PRIO_INCREASE_NEVER) {
+                    for (let i = 0; i < flipcards.length; i++) {
+                        const c = flipcards[i];
+                        // We want to help new cards "catch up" towards old cards in prios.
+                        c.prio = Math.max(c.prio, minPrioInUserData - PRIO_INCREASE_LATER);
                     }
                 }
             };
