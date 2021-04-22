@@ -27,6 +27,21 @@
                 transform: translate(-50%, -50%);
             }
 
+            .unselectable {
+                -webkit-touch-callout: none; /* iOS Safari */
+                -webkit-user-select: none; /* Safari */
+                -khtml-user-select: none; /* Konqueror HTML */
+                -moz-user-select: none; /* Old versions of Firefox */
+                -ms-user-select: none; /* Internet Explorer/Edge */
+                user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+                -webkit-tap-highlight-color: transparent !important;
+                outline: none !important;
+            }
+
+            /**********************************************************
+             *********************** FLIP CARD ************************
+             **********************************************************/
+
             #flip-card-outer-container {
                 position: relative;
                 background-color: transparent;
@@ -120,6 +135,27 @@
                 transform: rotateY(180deg);
             }
 
+            ul {
+                text-align: left !important;
+                margin-bottom: 0;
+                margin-top: 0;
+            }
+
+            .text-left {
+                text-align: left !important;
+            }
+
+            .cloud-provider-on-card {
+                position: absolute;
+                left: 20px;
+                top: 20px;
+                width: 48px;
+            }
+
+            /**********************************************************
+             ************************** DECKS *************************
+             **********************************************************/
+
             #deck {
                 position: absolute;
                 left: 15px;
@@ -167,6 +203,10 @@
                 font-style: italic;
             }
 
+            /**********************************************************
+             ********************* ADD CARD BUTTON ********************
+             **********************************************************/
+
             #add-card-button {
                 position: absolute;
                 left: 95px;
@@ -185,6 +225,10 @@
                 visibility: hidden;
             }
 
+            /**********************************************************
+             ********************* NAVIGATION BAR *********************
+             **********************************************************/
+
             #navigation-bar {
                 position: absolute;
                 width: 590px;
@@ -199,22 +243,15 @@
                 margin-left: 10px;
             }
 
+            /**********************************************************
+             *********************** ACTION BAR ***********************
+             **********************************************************/
+
             #action-bar {
                 position: absolute;
                 top: 400px;
                 left: 10px;
                 z-index: 12;
-            }
-
-            .unselectable {
-                -webkit-touch-callout: none; /* iOS Safari */
-                -webkit-user-select: none; /* Safari */
-                -khtml-user-select: none; /* Konqueror HTML */
-                -moz-user-select: none; /* Old versions of Firefox */
-                -ms-user-select: none; /* Internet Explorer/Edge */
-                user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
-                -webkit-tap-highlight-color: transparent !important;
-                outline: none !important;
             }
 
             .action-bar-item {
@@ -231,6 +268,11 @@
                 margin-left: 40px;
                 margin-right: 30px;
             }
+
+            /**********************************************************
+             *************************** SVG **************************
+             **********************************************************/
+
             .svg-container {
                 width: 60px;
                 transition: transform 0.2s;
@@ -249,22 +291,9 @@
                 margin-top: 5px;
             }
 
-            ul {
-                text-align: left !important;
-                margin-bottom: 0;
-                margin-top: 0;
-            }
-
-            .text-left {
-                text-align: left !important;
-            }
-
-            .cloud-provider-on-card {
-                position: absolute;
-                left: 20px;
-                top: 20px;
-                width: 48px;
-            }
+            /**********************************************************
+             ********************** USER DATA CARD ********************
+             **********************************************************/
 
             #user-data-card {
                 position: absolute;
@@ -389,7 +418,7 @@
             <div id="potemkin-card">
                 <div id="potemkin-card-inner-container">
                     <div id="potemkin-card-front-container">
-                        <img src="logo_aws.svg" class="cloud-provider-on-card" />
+                        <img src="logo_aws.svg" class="cloud-provider-on-card unselectable" />
                         <div id="potemkin-card-front"></div>
                     </div>
                 </div>
@@ -401,7 +430,7 @@
                 <div id="card-right" class="unselectable" onMouseOver="hover(10)" onMouseOut="hover(0)"></div>
                 <div id="flip-card-inner-container">
                     <div id="flip-card-front-container">
-                        <img src="logo_aws.svg" class="cloud-provider-on-card" />
+                        <img src="logo_aws.svg" class="cloud-provider-on-card unselectable" />
                         <div id="flip-card-front"></div>
                     </div>
                     <div id="flip-card-back-container">
@@ -800,7 +829,7 @@
                     }
                 }
                 // Deal with special case where new cards are added after old cards have drifted far away in userData prios.
-                if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData != PRIO_INCREASE_NEVER) {
+                if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData < PRIO_INCREASE_NEVER) {
                     for (let i = 0; i < flipcards.length; i++) {
                         const c = flipcards[i];
                         // We want to help new cards "catch up" towards old cards in prios.
@@ -956,11 +985,19 @@
                     // Prevent situation where we end up displaying same card twice in a row.
                     currentCard.prio = minPrioFromOtherCards + PRIO_INCREASE_SOON;
                 }
+                // Visuals
                 changeCurrentCard();
                 decoratePotemkin();
                 throwAwayCard(translateX, translateY);
+                // Prevent edge case where touch device accidentally clicks button multiple times consecutively.
+                get("action-bar").style.pointerEvents = "none";
+                window.setTimeout(() => {
+                    get("action-bar").style.pointerEvents = "auto";
+                }, 400);
+                // Render real card over potemkin card
                 window.setTimeout(resetCardOrientationQuickly, 400);
                 window.setTimeout(renderRealCard, 500);
+                // Save state
                 saveStateToLocalStorage();
             };
 

@@ -360,7 +360,7 @@ const aws_cards = [
         "q": "Can you use read replicas to improve the availability of your RDS database?",
         "a": `
             <ul>
-                <li>You can reduce load on your primary database instance by creating read replicas and directing read queries to them. However, a read replica can not be promoted to primary database instance.</li>
+                <li>You can reduce load on your primary database instance by creating read replicas and directing read queries to them. However, a read replica can not be promoted to primary database instance (except in the case of Aurora).</li>
                 <li>You can configure <b>Multi-AZ</b> setup for your RDS to increase availability. With Multi-AZ, a standby copy of your database is kept in sync, and promoted to primary database if needed.</li>
                 <li>According to AWS exam terminology, a read replica improves performance, not availability.</i>
             </ul>
@@ -385,6 +385,47 @@ const aws_cards = [
                 <li><b>Caches</b>: increase caching so that fewer requests reach the database. Architectures are often designed with ElastiCache in front of RDS. Your web application might also cache some responses, and static content can be offloaded entirely to S3 and CloudFront.</li>
             </ul>
         
+        `
+    },
+    {
+        "q": "List Aurora endpoints.",
+        "a": `Aurora endpoints<br><br>
+            <ul>
+                <li><b>Cluster endpoint</b> directs traffic to current primary database instance</li>
+                <li><b>Reader endpoint</b> distributes traffic among read replicas</li>
+                <li><b>Instance endpoint</b> connects to a specific instance</li>
+                <li><b>Custom endpoints</b> can be created in advanced use cases (e.g. configure one group of beefy replicas for production, and another group of small replicas for internal reports, to isolate production for performance reasons)
+
+            </ul>
+            `
+    },
+    {
+        "q": "You are using Aurora's Reader endpoint for all read queries. You've noticed performance issues whenever the marketing team runs expensive queries to produce their reports. How can you improve performance?",
+        "a": "You can create a </i>custom endpoint</i> to separate production traffic from low-priority internal traffic. You can configure the custom endpoint to direct traffic to a different group of read replicas, and ask the marketing team to use that endpoint for their reports."
+    },
+    {
+        "q": "How can you scale Aurora capacity?",
+        "a": "Aurora can be used in <i>serverless</i> mode, where capacity is automatically scaled according to needs. Alternatively, you can manually configure the number of instances and instance types for Aurora."
+    },
+    {
+        "q": "What does <i>cluster volume</i> mean in the context of Aurora?",
+        "a": "<i>Cluster volume</i> is a virtual volume where the data for your Aurora cluster is stored. The data is replicated on SSDs across three AZs in a single region."
+    },
+    {
+        "q": "Describe failover in case where the primary database instance of a single-master Aurora cluster fails.",
+        "a": "If the primary database instance of a single-master Aurora cluster fails, Aurora will promote an existing read replica to the new primary instance. If the cluster does not have read replicas, it will instead create a new primary instance."
+    },
+    {
+        "q": "How can you reduce latency for typical RDS database read queries?",
+        "a": "If you configure ElastiCache (Redis or Memcached) in front of your RDS and direct read queries through it, you can achieve very low latency for cached queries."
+    },
+    {
+        "q": "In the context of the OSI model, in which layers do AWS Shield and AWS WAF provide protection?",
+        "a": `<ul>
+                <li><b>AWS WAF</b> (Web Application Firewall) provides protection for the application layer (layer 7 in OSI model).</li>
+                <li><b>AWS Shield</b> provides protection for the transport layer (layer 4, e.g. TCP or UDP) and network layer (layer 3, e.g. routing).</li>
+                <li><b>AWS Shield Advanced</b> includes support from AWS DDoS Response Team, who will help you protect your application (layer 7).</li>
+              </ul>
         `
     }
 ]
