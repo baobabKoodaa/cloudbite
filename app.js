@@ -12,6 +12,7 @@ const PRIO_INCREASE_LATER = 10;
 const PRIO_INCREASE_SOON = 1;
 const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
 const LOCAL_STORAGE_KEY = "cloudbite-userdata";
+const LOCAL_STORAGE_DUPLICATE_DETECTION_KEY = "cloudbite-latest-session-id"
 
 // State
 let currentDeck = "aws";
@@ -22,6 +23,7 @@ let mouseDownCard = null;
 let mouseDragging = false;
 let lastMoveCoordinates = null;
 let userData = null;
+let sessionIdForDuplicateDetection = null;
 
 const get = function (id) {
     return document.getElementById(id);
@@ -269,6 +271,11 @@ hash = function (flipcard) {
 };
 
 const saveStateToLocalStorage = function () {
+    // Prevent issue where user is running Cloudbite in 2 tabs, which would overwrite each others' changes to localStorage.
+    if (sessionIdForDuplicateDetection != localStorage.getItem(LOCAL_STORAGE_DUPLICATE_DETECTION_KEY)) {
+        alert("Warning! It looks like you have used Cloudbite from another tab, and you are now using Cloudbite from an older tab which has stale data. In order to prevent possible data loss, we are not saving your changes from this tab to local storage. Please close this tab and open a new tab for Cloudbite.")
+        return
+    }
     userData.prioForHash = {};
     for (let i = 0; i < flipcards.length; i++) {
         const c = flipcards[i];
@@ -308,6 +315,9 @@ const initializeUserSession = function () {
         };
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
     }
+    // These are for detecting when user has Cloudbite simultaneously open in 2 tabs
+    sessionIdForDuplicateDetection = Math.random()
+    localStorage.setItem(LOCAL_STORAGE_DUPLICATE_DETECTION_KEY, sessionIdForDuplicateDetection)
     // Adjust flipcards according to prios in userData.
     let minPrioInUserData = Number.POSITIVE_INFINITY;
     for (let i = 0; i < flipcards.length; i++) {
