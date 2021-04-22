@@ -641,25 +641,31 @@
             };
 
             const onMouseMove = function (event) {
-                if (mouseDownCard) {
-                    const x = event.clientX || event.targetTouches[0].pageX;
-                    const y = event.clientY || event.targetTouches[0].pageY;
-                    const diffX = x - mouseDownCard.x;
-                    const diffY = y - mouseDownCard.y;
-                    lastMoveCoordinates = {
-                        x: x,
-                        y: y,
-                    };
-                    if (mouseDragging || Math.abs(diffX) + Math.abs(diffY) > 20) {
-                        mouseDragging = true;
-                        // Drag card
-                        get("flip-card-outer-container").style.transition = `transform 0s`;
-                        get("flip-card-outer-container").style.transform = `translate(${diffX}px, ${diffY}px)`;
-                        // Reset card temporary-rotation because that +-10 rotation looks weird when dragged.
-                        rotate(0);
-                        // Make potemkin card visible because it looks nice when real card snaps to its position.
-                        get("potemkin-card").style.visibility = "visible";
-                    }
+                if (!mouseDownCard) {
+                    // We only care about mouse moves when dragging card.
+                    return;
+                }
+                if (!event.clientX && !event.targetTouches) {
+                    // Dragging card outside viewport, unable to get coordinates.
+                    return;
+                }
+                const x = event.clientX || event.targetTouches[0].pageX;
+                const y = event.clientY || event.targetTouches[0].pageY;
+                const diffX = x - mouseDownCard.x;
+                const diffY = y - mouseDownCard.y;
+                lastMoveCoordinates = {
+                    x: x,
+                    y: y,
+                };
+                if (mouseDragging || Math.abs(diffX) + Math.abs(diffY) > 20) {
+                    mouseDragging = true;
+                    // Drag card
+                    get("flip-card-outer-container").style.transition = `transform 0s`;
+                    get("flip-card-outer-container").style.transform = `translate(${diffX}px, ${diffY}px)`;
+                    // Reset card temporary-rotation because that +-10 rotation looks weird when dragged.
+                    rotate(0);
+                    // Make potemkin card visible because it looks nice when real card snaps to its position.
+                    get("potemkin-card").style.visibility = "visible";
                 }
             };
 
