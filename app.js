@@ -12,7 +12,7 @@ const PRIO_INCREASE_LATER = 10;
 const PRIO_INCREASE_SOON = 1;
 const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
 const LOCAL_STORAGE_KEY = "cloudbite-userdata";
-const LOCAL_STORAGE_DUPLICATE_DETECTION_KEY = "cloudbite-latest-session-id"
+const LOCAL_STORAGE_DUPLICATE_DETECTION_KEY = "cloudbite-latest-session-id";
 
 // State
 let currentDeck = "aws";
@@ -273,8 +273,10 @@ hash = function (flipcard) {
 const saveStateToLocalStorage = function () {
     // Prevent issue where user is running Cloudbite in 2 tabs, which would overwrite each others' changes to localStorage.
     if (sessionIdForDuplicateDetection != localStorage.getItem(LOCAL_STORAGE_DUPLICATE_DETECTION_KEY)) {
-        alert("Warning! It looks like you have used Cloudbite from another tab, and you are now using Cloudbite from an older tab which has stale data. In order to prevent possible data loss, we are not saving your changes from this tab to local storage. Please close this tab and open a new tab for Cloudbite.")
-        return
+        alert(
+            "Warning! It looks like you have used Cloudbite from another tab, and you are now using Cloudbite from an older tab which has stale data. In order to prevent possible data loss, we are not saving your changes from this tab to local storage. Please close this tab and open a new tab for Cloudbite."
+        );
+        return;
     }
     userData.prioForHash = {};
     for (let i = 0; i < flipcards.length; i++) {
@@ -316,31 +318,41 @@ const initializeUserSession = function () {
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(userData));
     }
     // These are for detecting when user has Cloudbite simultaneously open in 2 tabs
-    sessionIdForDuplicateDetection = Math.random()
-    localStorage.setItem(LOCAL_STORAGE_DUPLICATE_DETECTION_KEY, sessionIdForDuplicateDetection)
+    sessionIdForDuplicateDetection = Math.random();
+    localStorage.setItem(LOCAL_STORAGE_DUPLICATE_DETECTION_KEY, sessionIdForDuplicateDetection);
     // Adjust flipcards according to prios in userData.
-    let minPrioInUserData = Number.POSITIVE_INFINITY;
+    let minPriosInUserData = {
+        aws: Number.POSITIVE_INFINITY,
+        azure: Number.POSITIVE_INFINITY,
+        gcp: Number.POSITIVE_INFINITY,
+    };
     for (let i = 0; i < flipcards.length; i++) {
         const c = flipcards[i];
         c.hash = hash(c);
         c.prio = PRIO_INITIAL;
         if (c.hash in userData.prioForHash) {
             c.prio = userData.prioForHash[c.hash];
-            minPrioInUserData = c.prio;
-        }
-        if (!c.prio) {
-            // Case: card was "trashed", JSONified cookie had undefined/null.
-            c.prio = Number.POSITIVE_INFINITY;
+            if (!c.prio) {
+                // Case: card was "trashed", JSONified cookie had undefined/null.
+                c.prio = Number.POSITIVE_INFINITY;
+            }
+            minPriosInUserData[c.deck] = Math.min(c.prio, minPriosInUserData[c.deck]);
         }
     }
     // Deal with special case where new cards are added after old cards have drifted far away in userData prios.
-    if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData < PRIO_INCREASE_NEVER) {
-        for (let i = 0; i < flipcards.length; i++) {
-            const c = flipcards[i];
-            // We want to help new cards "catch up" towards old cards in prios.
-            c.prio = Math.max(c.prio, minPrioInUserData - PRIO_INCREASE_LATER);
+    ["aws", "azure", "gcp"].forEach((deck) => {
+        const minPrioInUserData = minPriosInUserData[deck];
+        if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData < PRIO_INCREASE_NEVER) {
+            for (let i = 0; i < flipcards.length; i++) {
+                const c = flipcards[i];
+                if (c.deck != deck) {
+                    continue;
+                }
+                // We want to help new cards "catch up" towards old cards in prios.
+                c.prio = Math.max(c.prio, minPrioInUserData - PRIO_INCREASE_LATER);
+            }
         }
-    }
+    });
 };
 
 const throwAwayCard = function (translateX, translateY) {
