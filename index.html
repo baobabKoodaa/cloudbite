@@ -710,6 +710,13 @@
                 { passive: false }
             );
 
+            // Event listener for multi-finger touch to prevent accidental dragging
+            document.addEventListener("touchstart", (e) => {
+                if (e.touches.length > 1) {
+                    onMouseUpAnywhere();
+                }
+            });
+
             // Event listeners for left-mouse-up-anywhere or stop-dragging-with-touchscreen-anywhere
             document.addEventListener("mouseup", (e) => {
                 if (e.which == 1) {
