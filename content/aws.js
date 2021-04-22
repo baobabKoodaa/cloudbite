@@ -427,5 +427,87 @@ const aws_cards = [
                 <li><b>AWS Shield Advanced</b> includes support from AWS DDoS Response Team, who will help you protect your application (layer 7).</li>
               </ul>
         `
+    },
+    {
+        "q": "What are <i>attributes</i> in the context of DynamoDB?",
+        "a": "DynamoDB tables consist of items (rows) which have attributes (columns). Different items in the same table are allowed to have different attributes."
+    },
+    {
+        "q": "Compare queries and scans in the context of DynamoDB.",
+        "a": `<ul>
+                <li>DynamoDB <i>scan</i> will read the entire table, so it might be slow and expensive.</li>
+                <li>DynamoDB <i>query</i> will use partitions and indexes more efficiently to fetch the requested data. In order to execute a query, you must define at least a partition key, and optionally a sort key.</li>
+              </ul>
+             `
+    },
+    {
+        "q": "What kind of help does AWS Trusted Advisor provide?",
+        "a": `AWS Trusted Advisor provides automated checks for your AWS setup in the following categories:<br><br>
+            <ul>
+                <li>Cost optimization</li>
+                <li>Performance</li>
+                <li>Security</li>
+                <li>Fault tolerance</li>
+                <li>Service limits</li>
+            </ul>
+        `
+    },
+    {
+        "q": "How can you stay informed about AWS events which may impact your operations?",
+        "a": "AWS Personal Health Dashboard provides information about AWS events which may affect you. For example, if AWS is planning to sunset an old EC2 host that your instance is running on, you should see a scheduled event on the dashboard."
+    },
+    {
+        "q": "Compare the Service Health Dashboard to the Personal Health Dashboard.",
+        "a": "The Service Health Dashboard displays the general status of AWS services, whereas the Personal Health Dashboard provides information specific to your AWS resources."
+    },
+    {
+        "q": "If you write to DynamoDB and attempt to read the data immediately, are you guaranteed to get the recently-updated data, or is there a risk you might get stale data?",
+        "a": `DynamoDB offers you the following read consistency options:<br><br>
+            <ul>
+                <li><b>Eventually consistent reads</b> are usually good enough, but they may sometimes return stale data.</li>
+                <li><b>Strongly consistent reads</b> are guaranteed to reflect the newest data, but they cost more, have higher latency, and fail more often with error 500.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Describe a use case for read transactions in DynamoDB, and explain why the use case can't be fulfilled with merely strongly consistent reads.",
+        "a": `DynamoDB allows you to pack multiple writes into a transaction.
+        When the transaction is executed, either all of the writes are committed, or none of them are (if the transaction fails).
+        However, unlike with traditional databases, the writes are not guaranteed to be committed <i>simultaneously</i>.
+        If we executed a transaction involving two writes, and immediately queried for the data with two strongly consistent reads,
+        it's possible that one of the reads returns fresh data, while the other read returns stale data (thus leading to inconsistent results).
+        In this case it's best to pack the reads into a transaction, in order to guarantee that we either get consistent results, or the read transaction fails.
+        `
+    },
+    {
+        "q": "In the context of DynamoDB, what's the difference between <i>provisioned throughput capacity</i> and <i>on-demand capacity</i>?",
+        "a": `
+            DynamoDB capacity options<br><br>
+            <ul>
+                <li>Provisioned throughput capacity: you define the read and write capacity units.</li>
+                <li>On-demand capacity: auto-scaling for read and write capacity units.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Your DynamoDB database is occasionally returning <i>ProvisionedThroughputExceededException</i> to API requests. What can you do about it?",
+        "a": `<div class="text-left"><i>ProvisionedThroughputExceededException</i> occurs when you are sending too many requests
+        relative to the read or write capacity that you have defined for the DynamoDB database. Your options are:</div><br>
+        <ul>
+            <li>Manually increase read/write capacity units.</li>
+            <li>Change from manually provisioned capacity to auto-scaled capacity, which guarantees you will never be rate-limited.</li>          
+            <li>Do nothing? If you are sending requests to DynamoDB via AWS SDK, you should already be using automatic retries with exponential backoff. If the errors are only occasional, the requests are eventually accepted with retries.</li>
+        </ul>
+        `
+    },
+    {
+        "q": "Your DynamoDB database is configured for 1 read capacity unit and 1 write capacity unit. How many reads and writes per second can it handle?",
+        "a": `DynamoDB capacity units<br><br>
+            <ul>
+                <li>One read capacity unit corresponds to one strongly consistent read of 4KiB item per second, or two eventually consistent reads of 4KiB items per second.</li>
+                <li>One write capacity units corresponds to one write per second, for an item up to 4KiB</li>
+
+            </ul>
+              `
     }
 ]
