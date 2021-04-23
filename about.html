@@ -56,23 +56,23 @@
     <body>
         <div id="centered-content">
             <div id="about-text">
-                <h1>Cloudbite - bite-sized cloud learning</h1>
+                <h1>&#x2601; Cloudbite - bite-sized cloud learning</h1>
                 <p>
                     <a href="https://cloudbite.attejuvonen.fi" target="_blank">Cloudbite</a> is a low-barrier, free web app intended for developers
                     who want to learn about AWS. Cloudbite helps you retain knowledge with flashcards and spaced repetition, a scientifically proven
-                    method of learning. Content of the flashcards is particularly tailored towards AWS certificate exams at the Associate level.
+                    method of learning. Content is particularly tailored towards AWS certificate exams at the Associate level. All data is stored
+                    locally on your device and is never uploaded anywhere.
                 </p>
 
                 <h2>How to use Cloudbite</h2>
 
                 <h3>Flashcards</h3>
-
                 <p>
                     Read the question at the front of the card and think about what the answer should be. Then flip the card to its backside to reveal
                     the answer and assess how well you did.
                 </p>
                 <p>
-                    If you feel like you need more practice with this subject, select "repeat soon". If you recalled the subject with ease, select
+                    If you feel like you need more practice with the subject, select "repeat soon". If you recalled the subject with ease, select
                     "repeat later". If you are very familiar with the subject, or if it's irrelevant for you, you should select "repeat never".
                 </p>
                 <p>
@@ -81,23 +81,122 @@
                 </p>
 
                 <h3>Controls</h3>
-
                 <p>
                     The most obvious way to use Cloudbite is by clicking on things you see. Alternatively, you can also drag the card to the desired
                     "repeat choice".
                 </p>
+                <p>In addition, there are keyboard shortcuts:</p>
+
+                <ul>
+                    <li>The card can be flipped with <i>enter</i> and <i>space</i></li>
+                    <li>To "repeat later", press <i>right-arrow</i> or <i>up-arrow</i></li>
+                    <li>To "repeat soon", press <i>left-arrow</i> or <i>down-arrow</i></li>
+                </ul>
+
+                <h3>Content</h3>
+                <p>While Cloudbite is useful to learn about AWS in general, the content is specifically optimized for these AWS exams:</p>
+                <ul>
+                    <li>AWS Certified Solutions Architect - Associate</li>
+                    <li>AWS Certified Developer - Associate</li>
+                    <li>AWS Certified SysOps Administrator - Associate</li>
+                </ul>
                 <p>
-                    In addition, there are keyboard shortcuts:
-                    
-                    <ul>
-                        <li>The card can be flipped with <i>enter</i> and <i>space</i></li>
-                        <li>To "repeat later", press <i>right-arrow</i> or <i>up-arrow</i></li>
-                        <li>To "repeat soon", press <i>left-arrow</i> or <i>down-arrow</i></li>
-                    </ul>
+                    Although AWS documentation gives the impression that these certifications are distinct, that is not the case. These exams have
+                    <i>a lot</i> of overlap. If you study for one of these exams, you might as well take all 3.
                 </p>
 
-                <h2>Free as in...</h2>
-                <p>Some text here.</p>
+                <h3>Methodology</h3>
+                <p>
+                    Cloudbite is primarily intended to be a <i>secondary</i> learning resource. That means you learn the hard stuff somewhere else: at
+                    work, tinkering at home, reading documentation, watching videos... and Cloudbite helps you memorize key facts and retain your
+                    knowledge over time.
+                </p>
+                <p>Cloudbite can also help you identify blind spots: topics that you should study for the certificate exams.</p>
+                <p>
+                    Sometimes you might even learn new things directly from the flashcards, but the explanations are often too short to cue you in to
+                    new subjects that you are unfamiliar with. There's no shame in googling while you flip through cards!
+                </p>
+
+                <h2>Comparisons to other sites</h2>
+
+                <p>I created Cloudbite because I was disappointed at existing learning resources for cloud certificate exams.</p>
+
+                <h3>Practice exam format is actively harmful to learning</h3>
+
+                <p>
+                    The most widely used method by other cloud learning websites appears to be practice exams which mimic the real exam. That means
+                    multiple choice questions where you are visually exposed to options that include one correct answer and several incorrect answers.
+                    Visual exposure to misinformation is actively harmful to learning.
+                </p>
+
+                <p>
+                    Websites which are dead-set on using this approach should
+                    <i>at least</i> reveal the correct answer immediately after the learner answers the question. However, none of them do. There can
+                    be a delay of hours between answering a question and seeing what was the correct answer. This delay compounds the harmful exposure
+                    to misinformation, which makes it more difficult for you to later recall key facts about the subject correctly.
+                </p>
+                <p>
+                    In addition, practice exam questions are often extremely verbose and confusing. Simply reading and understanding these questions
+                    can be emotionally draining, which in turn raises the barrier to study.
+                </p>
+
+                <h3>Target audience is rarely developers</h3>
+
+                <p>
+                    The majority of AWS certificate training material appears to be targeted at "person off the street". Courses often explicitly
+                    state that no prior coding experience is required. It's great that we have learning resources for laypersons, but it would be
+                    great to <i>also</i> have some learning resources for developers. I'm a developer with a computer science background and some
+                    experience in the industry. I don't want to watch another video that explains "a server is like the barista at a coffee shop, and
+                    a client is like..."
+                </p>
+
+                <h3>Material is riddled with errors</h3>
+
+                <p>
+                    Perhaps the biggest frustration for me is that content on other sites is often chock full of errors, and nobody cares enough to
+                    fix them. We all make mistakes, that's fine. But the issue I have is with people who <i>literally sell disinformation</i>
+                    and don't care. I've reported several errors to multiple cloud learning websites. The responses range from non-existant to abysmal
+                    and nothing has been fixed. Most sites appear to be focused on milling out large quantities of low-quality content and marketing
+                    aggressively, instead of focusing on providing quality content.
+                </p>
+
+                <h3>How is Cloudbite different</h3>
+
+                <ul>
+                    <li>
+                        <b>Low barrier</b>; bite-sized cloud learning (free, no registration, simple presentation of content, no exhaustingly-verbose
+                        questions)
+                    </li>
+                    <li>
+                        <b>Quality content</b> (instead of producing a large quantity of low-quality content, I tried to produce a medium quantity of
+                        high-quality content and I'm committed to fixing errors reported by users)
+                    </li>
+                    <li>
+                        <b>Methods</b> (instead of using a method that's actively harmful to learning, Cloudbite uses the scientifically proven method
+                        of spaced repetition learning with flash cards)
+                    </li>
+                    <li>
+                        <b>Audience</b> (Cloudbite is not targeted at "person off the street", it is targeted at developers who already understand
+                        what computers are)
+                    </li>
+                </ul>
+
+                <h2>Cloudbite is free</h2>
+
+                <p>To be specific, Cloudbite is...</p>
+                <ul>
+                    <li>Free as in <b>free beer</b> or free lunch</li>
+                    <li>
+                        Free as in <b>freedom</b><br />(the <a href="https://github.com/baobabKoodaa/cloudbite" target="_blank">code</a> is published
+                        with a permissive open-source license)
+                    </li>
+                    <li>Free as in <b>free from advertisements</b><br />(you don't pay with your attention)</li>
+                    <li>Free as in <b>freeware</b> not shareware<br />(I don't have a premium product to upsell you)</li>
+                    <li>
+                        Free as in <b>free from data collection</b><br />(you don't pay with your data; you are not the product; we only count
+                        visitors with <a href="https://plausible.io/" target="_blank">minimal non-invasive analytics</a>)
+                    </li>
+                </ul>
 
                 <h2>Feedback / report errors</h2>
                 <p>

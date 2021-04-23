@@ -422,9 +422,9 @@ const aws_cards = [
     {
         "q": "In the context of the OSI model, in which layers do AWS Shield and AWS WAF provide protection?",
         "a": `<ul>
-                <li><b>AWS WAF</b> (Web Application Firewall) provides protection for the application layer (layer 7 in OSI model).</li>
-                <li><b>AWS Shield</b> provides protection for the transport layer (layer 4, e.g. TCP or UDP) and network layer (layer 3, e.g. routing).</li>
-                <li><b>AWS Shield Advanced</b> includes support from AWS DDoS Response Team, who will help you protect your application (layer 7).</li>
+                <li><b>AWS WAF</b> (Web Application Firewall) provides protection for the application layer.</li>
+                <li><b>AWS Shield</b> provides protection for the transport layer (e.g. TCP or UDP) and network layer (e.g. routing).</li>
+                <li><b>AWS Shield Advanced</b> includes support from AWS DDoS Response Team, who will help you protect your application layer.</li>
               </ul>
         `
     },
@@ -509,5 +509,20 @@ const aws_cards = [
 
             </ul>
               `
-    }
+    },
+    {
+        "q": "Explain the following DynamoDB terms: partition, partition key, sort key, primary key.",
+        "a": `
+            <ul>
+                <li><b>Partition</b>: items (rows) in DynamoDB are distributed across partitions, which can be up to 10GiB in size.</li>
+                <li><b>Partition key</b>: hash of the value of the partition key determines which partition an item belongs to. Partition keys are a data field (similar to attribute/column).</li>
+                <li><b>Sort key</b>: when you create a table, you have the option to sort items according to one attribute, which is called the <i>sort key</i> or <i>range attribute</i>. Similar to index.</li>
+                <li><b>Primary key</b>: must be unique for all items within a table. Primary key can be either partition key or a composite of partition key and sort key.</li>
+                </ul>
+        `
+    },
+    {
+        "q": "Is DynamoDB data highly available?",
+        "a": "DynamoDB data is replicated between multiple AZs by default. You can also choose <i>global tables</i> for multi-region replication."
+    },
 ]
