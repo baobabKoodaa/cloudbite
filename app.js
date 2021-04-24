@@ -367,6 +367,9 @@ const changeCurrentCard = function () {
         if (card.deck != currentDeck) {
             continue;
         }
+        if (card === currentCard) {
+            continue;
+        }
         const prio = card.prio + Math.random(); // Random (between 0-1) is useful to break ties (shuffle).
         if (prio < minPrio) {
             minPrio = prio;
@@ -499,8 +502,8 @@ const switchCard = function (prioIncrease, translateX, translateY) {
     currentCard.prio += prioIncrease;
     const minPrioFromOtherCards = getMinPrio(currentCard);
     if (currentCard.prio < minPrioFromOtherCards) {
-        // Prevent situation where we end up displaying same card twice in a row.
-        currentCard.prio = minPrioFromOtherCards + PRIO_INCREASE_SOON;
+        // When a card is seen, its prio should always jump to AT LEAST the next card's prio.
+        currentCard.prio = minPrioFromOtherCards;
     }
     // Visuals
     changeCurrentCard();
