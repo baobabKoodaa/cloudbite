@@ -195,7 +195,7 @@ const aws_cards = [
                     <li>Inline policy</li>
                 </ul>
                 <br>
-              <div class="text-left">Policies are attached to identities (users, roles, or groups). Inline policy means a policy that's directly attached to a single identity. Other policies can be attached to multiple entities. AWS managed policies are intended to reduce manual configuration for common use cases, e.g. AWS maintains AdministratorAccess policy that gives wide permissions for many things.</div>
+              <div class="text-left">Policies are attached to identities (users, roles, or groups). Inline policy means a policy that's directly attached to a single identity. Other policies can be attached to multiple identities. AWS managed policies are intended to reduce manual configuration for common use cases, e.g. AWS maintains AdministratorAccess policy that gives wide permissions for many things.</div>
              `
     },
     {
@@ -245,10 +245,6 @@ const aws_cards = [
                 <li>S3 bucket names are globally unique<br>(like domain names)</li>
               </ul>
             `
-    },
-    {
-        "q": "Where can you configure access control to your S3 bucket?",
-        "a": "S3 bucket access control is typically configured in <i>bucket policies</i>. However, access control to S3 buckets can sometimes be configured elsewhere, such as in <i>VPC endpoint policies</i> or in <i>access control lists</i>."
     },
     {
         "q": "Provide an example of S3 lifecycle management.",
@@ -525,4 +521,144 @@ const aws_cards = [
         "q": "Is DynamoDB data highly available?",
         "a": "DynamoDB data is replicated between multiple AZs by default. You can also choose <i>global tables</i> for multi-region replication."
     },
+    {
+        "q": "Describe billing for DynamoDB indexes",
+        "a": "DynamoDB indexes need read and write capacity, just as your tables do. DynamoDB indexes are billed based on read and write capacity (plus small storage cost). If you create a <i>Local Secondary Index</i>, it will share capacity with the base table. If you create a <i>Global Secondary Index</i>, you must provision capacity for it separately from the base table."
+    },
+    {
+        "q": "Compare DynamoDB's Global Secondary Indexes to Local Secondary Indexes",
+        "a": `
+            <ul>
+                <li><b>Global Secondary Index</b>: can query over the entire table, across all partitions. Partition and sort key can be any attribute.</li>
+                <li><b>Local Secondary Index</b>: you must define partition key value in your queries (so you can only query a single partition). Must be created when the table is created initially. Partition key must be same as in base table, sort key can (and should) be different.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "How can you automate removal of old items in your DynamoDB table?",
+        "a": "You can set your DynamoDB items a <i>TTL</i> (Time To Live) attribute and they will be automatically deleted when the TTL expires."
+    },
+    {
+        "q": "How can you improve DynamoDB latency for commonly occurring requests?",
+        "a": "You can set up a cache in front of DynamoDB. You might choose <i>DynamoDB accelerator</i> (DAX) or <i>ElastiCache</i>."
+    },
+    {
+        "q": "How can you automate notifications whenever a DynamoDB table is written to?",
+        "a": "You can use <i>DynamoDB Streams</i> to invoke a Lambda function to react to write events. In order to deliver a notification, you might configure the Lambda function to publish to an SNS topic, where the relevant people has subscribed to."
+    },
+    {
+        "q": "Can you encrypt your Redshift data warehouse?",
+        "a": "You can use KMS or CloudHSM to encrypt your Redshift data at rest."
+    },
+    {
+        "q": "In practice, when would you choose CloudHSM over KMS?",
+        "a": "Typically, reasons for choosing CloudHSM over KMS are related to <b>compliance</b>. KSM operates in shared hardware tenancy, like most AWS services. This means different customers are separated only virtually from each other. Regulation might require you to handle keys on a dedicated piece of hardware. In this case you would choose CloudHSM."
+    },
+    {
+        "q": "Describe Redshift configuration options that might help you improve performance.",
+        "a": `
+            <ul>
+                <li>If your Redshift data warehouse is running in a <i>single node</i>, you may decide to change to a <i>multi-node cluster</i> in order to parallelize the workload.</li>
+                <li>The nodes of your cluster can be configured for either <i>dense compute</i> or <i>dense storage</i>.
+            </ul>
+        `
+    },
+    {
+        "q": "Evaluate the durability and availability of a Redshift data warehouse.",
+        "a": "Redshift runs in a single AZ (so it's not highly available). Regarding durability, there should be 3 copies of the data: one copy at the source where the data was inputted to Redshift, one copy on the compute nodes, and lastly, periodically taken snapshots in S3."
+    },
+    {
+        "q": "Which AWS service might help you run long-running queries on analytics data for business intelligence purposes?",
+        "a": "Redshift is a columnar store database, a data warehouse, which can take inputs from multiple sources like S3, EMR, and DynamoDB. Redshift is suitable for executing long-running queries on data like this."
+    },
+    {
+        "q": "You need to migrate a legacy Spark ETL job to AWS. Which AWS services should you consider?",
+        "a": `You might use either <b>Glue</b> or <b>EMR</b> (Elastic MapReduce) to run Spark ETL jobs. Glue is a fully managed, newer service, whereas EMR is an older service that allows more fine-grained control for developers.
+        `
+    },
+    {
+        "q": "Compare S3 Select and Athena.",
+        "a": `
+            Both S3 Select and Athena can be used to run ad hoc SQL-like queries on S3 data. However:<br><br>
+            <ul>
+                <li><b>Athena</b> requires you to create a table schema and crawl files before you can query the data.</li>
+                <li><b>S3 Select</b> can only run queries on a single file (like a really large CSV).</li>
+            </ul>
+        `
+    },
+    {
+        "q": "What is the difference between dedicated instances and dedicated hosts?",
+        "a": "Dedicated instances run on hardware that is dedicated for a particular AWS account. However, other instances from the same account may also run on the same hardware. Dedicated hosts can give more fine-grained control over exactly what instances are run on which host, and how the host is configured. Dedicated hosts are often used for compliance reasons, to run software that is not licensed for use within a multi-tenant host."
+    },
+    {
+        "q": "List options for using Microsoft Active Directory with AWS services.",
+        "a": `
+            Microsoft Active Directory<br><br>
+            <ul>
+                <li><b>AD Connector</b>: when you want your on-premises AD to handle authentication of users.</li>
+                <li><b>AWS Managed Microsoft AD</b>: when you need to actually run AD on AWS.</li>
+                <li><b>Simple AD</b>: basic AD features at lower cost than Managed Microsoft AD.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "If you need to protect data from accidental or malicious deletion for compliance reasons, what is the strongest protection offered by AWS?",
+        "a": "<b>S3 Glacier Vault Lock</b> provides <i>Write Once Read Many</i> (WORM) support, where you configure time-based retention for data, and the policy is immutable once locked. Even if you stop paying your AWS bill, your data will be stored for the retention period."
+    },
+    {
+        "q": "Where can you configure access control for S3 data?",
+        "a": `
+            Options for S3 data access control:<br><br>
+            <ul>
+                <li>VPC endpoint policies</li>
+                <li>IAM policies</li>
+                <li><b>Bucket policies</b></li>
+                <li>Bucket ACLs</li>
+                <li>Object ACLs</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Which AWS services might help you analyze large volumes of video data?",
+        "a": "You can ingest large volumes of video data with <i>Kinesis Video Streams</i> and consume the stream with <i>Kinesis Video Analytics</i>."
+    },
+    {
+        "q": "Compare Kinesis Data Streams to Kinesis Firehose Delivery Streams.",
+        "a": `
+        <div class="text-left">Kinesis Data Streams</div><br>
+            <ul>
+                <li>Data can persist up to 168 hours in the stream; possible to have multiple consumers (e.g. S3, DynamoDB, Redshift)</li>
+                <li>Streams are distributed across shards, billing per shard</li>
+            </ul><br>
+            <div class="text-left">Kinesis Firehose Delivery Streams</div><br>
+            <ul>
+                <li>No persistence, only one consumer (data immediately disappears when it's consumed)</li>
+                <li>Less configuration overhead (no shards to manage, billing based on ingested data)</li>
+            </ul>
+        `
+    },
+    {
+        "q": "How can you improve the performance of your HPC (High Performance Computing) workload, if the bottlenecks are shared disk access and latency between nodes?",
+        "a": `
+            Ways to improve HPC performance<br><br>
+            <ul>
+                <li><b>Amazon FSx for Lustre</b> provides scalable high-performance shared storage.</li>
+                <li><b>Elastic Fabric Adapter</b> (EFA) is a high-performance network interface for EC2 instances.</li>
+                <li><b>Cluster Placement group</b> will provision EC2 instances which are physically close to each other.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "How can you migrate large volumes of data from on-premises to AWS?",
+        "a": `
+        <div class="text-left">If a network transfer is feasible, you might transfer data to AWS with <b>DataSync</b> over a <i>Direct Connect</i> or VPN connection. Otherwise, these
+            are your physical transfer options:</div><br>
+            <ul>
+                <li><b>Snowball</b>: device with between 50TiB and 80TiB of storage capacity.</li>
+                <li><b>Snowball Edge</b>: device with 100TiB notional capacity, but only 45-80TiB capacity in practice. Multiple Snowball Edge devices can be clustered together.</li>
+                <li><b>Snowmobile</b>: a shipping container pulled by a semi-trailer truck, provides 100PiB storage capacity.</li>
+            </ul>
+        `
+    }
+
 ]
