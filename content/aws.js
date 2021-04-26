@@ -22,8 +22,8 @@ const aws_cards = [
         "a": "EC2 MetaData contains the instance type, ip address, AMI information, etc."
     },
     {
-        "q": "What kind of volumes can you mount on an EC2 instance?",
-        "a": `EC2 volume options<br><br>
+        "q": "What kind of physical disk volumes can you mount on an EC2 instance?",
+        "a": `EC2 physical disk volumes<br><br>
         <ul>
             <li>Instance store (ephemeral)</li>
             <li>EBS (Elastic Block Store, persistent)</li>
@@ -300,7 +300,7 @@ const aws_cards = [
     },
     {
         "q": "How can you make a website marketing campaign visible only to users of a specific country?",
-        "a": "You can use Route53 geolocation routing policy to route traffic from country A to resource X, and traffic from other countries to resource Y."
+        "a": "You can use Route 53 geolocation routing policy to route traffic from country A to resource X, and traffic from other countries to resource Y."
     },
     {
         "q": "Can you encrypt an unencrypted RDS database?",
@@ -529,8 +529,8 @@ const aws_cards = [
         "q": "Compare DynamoDB's Global Secondary Indexes to Local Secondary Indexes",
         "a": `
             <ul>
-                <li><b>Global Secondary Index</b>: can query over the entire table, across all partitions. Partition and sort key can be any attribute.</li>
-                <li><b>Local Secondary Index</b>: you must define partition key value in your queries (so you can only query a single partition). Must be created when the table is created initially. Partition key must be same as in base table, sort key can (and should) be different.</li>
+                <li><b>Global Secondary Index</b>: can query over the entire table, across all partitions. When you create the index, you must (any) attributes of the table as the partition key and the sort key of the index.</li>
+                <li><b>Local Secondary Index</b>: you can only query a single partition. The index must be created when the table is created initially. Partition key of the index must be same as in base table, sort key of the index can (and should) be different.</li>
             </ul>
         `
     },
@@ -659,6 +659,178 @@ const aws_cards = [
                 <li><b>Snowmobile</b>: a shipping container pulled by a semi-trailer truck, provides 100PiB storage capacity.</li>
             </ul>
         `
+    },
+    {
+        "q": "Describe AWS best practice for consolidating CouldTrail logs from different AWS accounts.",
+        "a": `
+            Steps to consolidate CloudTrail logs from different AWS accounts:<br><br>
+            <ul>
+                <li>Create a dedicated AWS account for logs.</li>
+                <li>Create an S3 bucket in the log account.</li>
+                <li>Grant other accounts <i>write-only</i> access to the S3 bucket.</li>
+                <li>Configure CloudTrail to log activity from all accounts to the S3 bucket.</li>
+                <li>Enable CloudTrail log file integrity validation.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "In the context of KMS CMK (Key Management Service Customer Master Key), compare customer-managed CMK to AWS-managed CMK.",
+        "a": `
+            For typical use cases, AWS-managed CMK is sufficient. Customer-managed CMK allows more fine-grained control over the creation,
+            rotation, deletion, and usage of the key. For example, a customer-managed CMK can be imported into AWS by the customer,
+            or the customer can choose to let KMS generate the key. A customer-managed CMK is sometimes needed due to <b>compliance</b> requirements.
+            (If the requirements are particularly stringent, you may need to use CloudHSM instead of KMS.)
+        `
+    },
+    {
+        "q": "Describe Amazon Macie.",
+        "a": "Amazon Macie is used to prevent accidental data leaks. Macie uses machine learning to discover sensitive data in S3 buckets."
+    },
+    {
+        "q": "How can resources in one VPC communicate with resources in another VPC?",
+        "a": `
+            You can connect two VPCs together with <b>VPC peering</b>. Resources on peered VPCs can connect to each other using private IP addresses,
+            as if they were on the same VPC (which means VPC peering is only possible if there are no overlapping CIDR blocks). It is possible
+            to peer VPCs even if they are on different regions or different AWS accounts.
+        `
+    },
+    {
+        "q": `You have 3 VPCs: A, B, and C. What is the simplest VPC peering setup that allows communication across all VPCs?`,
+        "a": `<div class="text-left">VPC peering is not transitive. If you need connections between 3 VPCs, then you need to create a VPC peering connection
+        between all pairs of VPCs:</div><br>
+        <ul>
+            <li>A and B</li>
+            <li>A and C</li>
+            <li>B and C</li>
+        </ul>
+        `
+    },
+    {
+        "q": "There are 2 types of VPC endpoints: interface endpoints and gateway endpoints. When should you use one over the other?",
+        "a": `
+                VPC endpoints<br><br>
+                <ul>
+                    <li><b>Gateway endpoint</b> is a target for a specific route in your route table. Gateway endpoints are free, but they only support connections to S3 and DynamoDB.</b>
+                    <li><b>Interface endpoint</b> is an Elastic Network Interface (ENI) with a private IP address. If you need a VPC endpoint to other AWS services besides S3 and DynamoDB, you need to use an interface endpoint, which comes with some costs.</li>
+                </ul>
+        `
+    },
+    {
+        "q": "What is the relationship between VPC and subnets?",
+        "a": `
+            When you create a VPC, you configure a CIDR block for it (a range of private IP addresses).
+            You can divide this CIDR block into subnets (each subnet is allocated some of the IP addresses from the VPC).
+        `
+    },
+    {
+        "q": "What is the distinction between a <i>private</i> subnet and a <i>public</i> subnet?",
+        "a": `Subnets are considered to be \"public\" if the subnet's route table has a route to an Internet gateway (IGW).
+            In practice, this means both incoming and outgoing internet traffic to resources running in the subnet is possible.
+        `
+    },
+    {
+        "q": "If you need to block a single IP address from accessing your EC2 instance, where should you configure this?",
+        "a": `
+            Usually when we configure IP address based access control for an EC2 instance, the appropriate place for
+            configuration are security groups. However, security groups by default deny everything and you can only
+            add configuration to allow specific traffic. Therefore, it is not possible to configure a security group
+            to block a single IP address while allowing traffic from other IP addresses. In order to block traffic from
+            a single IP address, we need to create a rule in the <b>Network Access Control List</b> (NACL) of the subnet
+            (which may affect other resources besides our EC2 instance).
+        `
+    },
+    {
+        "q": "Can you reuse NACLs for multiple subnets?",
+        "a": "Each subnet can only belong to a single NACL, but the same NACL can belong to multiple subnets."
+    },
+    {
+        "q": "Can you reuse Security Groups for multiple instances?",
+        "a": "Multiple security groups can be applied to the same instance, and the same security group can be applied to multiple instances."
+    },
+    {
+        "q": "Can you reuse Route Tables for multiple subnets?",
+        "a": "Each subnet must be associated with exactly one route table, but the same route table can be associated with many subnets."
+    },
+    {
+        "q": "You can define a specific IP address as the <i>source</i> of a security group rule. What else can you define as the source?",
+        "a": `
+            Security Group rule source can be:<br><br>
+            <ul>
+                <li>a specific IP address<br/>(e.g. 85.143.225.212/32)</li>
+                <li>a range of IP addresses<br/>(e.g. 85.143.225.212/16)</li>
+                <li>the ID of another security group<br>(e.g. sg-903004f8)</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Describe statefulness in the context of NACLs and Security Groups.",
+        "a": `<div class="text-left"><b>Security Groups are stateful</b>, both ways:</div><br>
+                <ul>
+                    <li>If a particular outbound traffic is allowed, then the response inbound traffic is allowed through (regardless of inbound rules)</li>
+                    <li>If a particular inbound traffic is allowed, then the response outbound traffic is allowed through (regardless of outbound rules)</li>
+                </ul>
+                <br>
+                <div class="text-left"><b>NACLs are stateless.</b> If you want your resources to be able to communicate through particular ports to particular targets, then you need to explicitly allow both inbound and unbound traffic.</div>
+        `
+    },
+    {
+        "q": "Often when you configure access control rules, you create multiple conflicting rules. For example, \"allow all traffic\" and \"deny traffic from this IP\" would be conflicting rules. Obviously, additional logic is needed to determine how conflicting rules are applied. This logic is different when evaluating CloudFormation template permissions compared to when evaluating NACL rules. Explain the difference.",
+        "a": `
+            Logic for interpreting conflicting rules<br><br>
+            <ul>
+                <li><b>CloudFormation template permissions</b>: if any permission is deny, then deny. Otherwise, if any permission is allow, then allow. Otherwise, deny.</li>
+                <li><b>NACL rules</b>: evaluate rules in ascending order based on rule number. If a rule matches, apply the rule immediately (higher-numbered rules will not be evaluated). If no rule matches, then the default * DENY rule is applied.</li>
+            </ul> 
+        `
+    },
+    {
+        "q": "What are route tables?",
+        "a": "Route tables direct network traffic to/from a subnet, according to the routes defined in the route table."
+    },
+    {
+        "q": "Route 53 provides two different failover options: <i>active-passive</i> and <i>active-active</i>. Explain the difference.",
+        "a": `
+            Route 53 DNS failover<br><br>
+            <ul>
+                <li><b>Active-active failover</b>: traffic is distributed among target resources according to routing policy (e.g. weighted, latency). If a resource becomes unhealthy, its traffic is directed at other target resources.</li>
+                <li><b>Active-passive failover</b>: traffic is directed at primary resource. If the primary resource becomes unhealthy, traffic is directed at the secondary resource.</li>
+                </ul>
+        `
+    },
+    {
+        "q": "Explain ALIAS record in the context of Route 53.",
+        "a": `
+            <ul>
+                <li><b>CNAME</b> record can be used to point traffic from one domain (e.g. play.steam.com) to another domain (e.g. steampowered.com).</li>
+                <li><b>ALIAS</b> record is similar to CNAME record, but unlike the CNAME record, ALIAS record can be applied to the apex domain.</li>
+                <li><b>Apex domain</b> is the "root" level of your domain. For example, mywebsite.com is an apex domain, whereas www.mywebsite.com or tv.mywebsite.com are not apex domains.</li>
+                <li>For example, <b>you can use the ALIAS record to point the apex domain to a CloudFront distribution.</b></li>
+            </ul>
+        `
+    },
+    {
+        "q": "List Route 53 routing policies.",
+        "a": `Route 53 routing policies<br><br>
+            <ul>
+                <li>Simple routing</li>
+                <li>Active-passive failover</li>
+                <li>Latency routing</li>
+                <li>Geolocation routing (based on country)</li>
+                <li>Geoproximity routing (like geolocation, but some traffic can be shifted from one target to another to even out the load)</li>
+                <li>Multivalue answer (return up to 8 healthy records at random)</li>
+                <li>Weighted (route to multiple targets in proportions that you specify)</li>
+            </ul>
+        `
+    },
+    {
+        "q": "How can you establish a <i>secure</i> connection from your office or on-premises datacenter to AWS?",
+        "a": `
+            Connecting to AWS securely<br><br>
+            <ul>
+                <li>Connections to AWS resources are typically encrypted by default (HTTPS, SSH, etc.)</li>
+                <li>You can establish a <i>Site-to-Site VPN</i> between your VPC and your on-premises network.</li>
+                <li>If you do not want traffic to cross the internet, you may be able to establish a <i>Direct Connect</i> connection, which is a dedicated network connection between your on-premises network and an AWS edge location (from where traffic is routed to your AWS resources using AWS' internal networks).</li>
+            </ul>
+        `
     }
-
 ]
