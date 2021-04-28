@@ -283,6 +283,10 @@ const aws_cards = [
         "a": "If the instance is using a custom AMI, you may need to manually add IAM role and permissions to the instance profile and install the SSM agent on the instance."
     },
     {
+        "q": "You can not find application logs from your EC2 instance in CloudWatch Logs. What is the first thing to check while troubleshooting?",
+        "a": "In order for application logs to be passed from your EC2 instance to CloudWatch Logs, the <b>CloudWatch Agent</b> must be installed on the instance."
+    },
+    {
         "q": "You've set up a CloudFormation stack for deployments, but another developer made changes to the stack via the AWS Console. What should you do?",
         "a": "You can use <i>drift detection</i> to identify differences between the CloudFormation template and the deployed stack, and then update the template accordingly and redeploy the stack."
     },
@@ -327,7 +331,14 @@ const aws_cards = [
     },
     {
         "q": `How can you restrict access to an S3 bucket such that it can only be accessed through CloudFront?`,
-        "a": `Create <i>Origin Access Identity</i> (OAI) for your CloudFront distribution and configure S3 bucket policy to restrict access for everyone except the OAI.`
+        "a": `
+            Steps to restrict access to S3 bucket to CloudFront only:<br><br>
+            <ul>
+                <li>Create <i>Origin Access Identity</i> (OAI) for your CloudFront distribution</li>
+                <li>Select \"Restrict bucket access\" in the Origin Settings of the CloudFront distribution</li>
+                <li>Configure an S3 bucket policy to restrict access for everyone except the OAI</li>
+            </ul>
+         `
     },
     {
         "q": "Evaluate the durability and availability of EBS volumes.",
@@ -547,12 +558,8 @@ const aws_cards = [
         "a": "You can use <i>DynamoDB Streams</i> to invoke a Lambda function to react to write events. In order to deliver a notification, you might configure the Lambda function to publish to an SNS topic, where the relevant people has subscribed to."
     },
     {
-        "q": "Can you encrypt your Redshift data warehouse?",
-        "a": "You can use KMS or CloudHSM to encrypt your Redshift data at rest."
-    },
-    {
-        "q": "In practice, when would you choose CloudHSM over KMS?",
-        "a": "Typically, reasons for choosing CloudHSM over KMS are related to <b>compliance</b>. KSM operates in shared hardware tenancy, like most AWS services. This means different customers are separated only virtually from each other. Regulation might require you to handle keys on a dedicated piece of hardware. In this case you would choose CloudHSM."
+        "q": "In practice, when would you need CloudHSM?",
+        "a": "Typically, reasons for using CloudHSM are related to <b>compliance</b>. KMS operates in shared hardware tenancy, like most AWS services. This means different customers are separated only virtually from each other. Regulation might require you to handle keys on a dedicated piece of hardware. In this case KMS alone would not be sufficient, and you would need to CloudHSM."
     },
     {
         "q": "Describe Redshift configuration options that might help you improve performance.",
@@ -679,7 +686,7 @@ const aws_cards = [
             For typical use cases, AWS-managed CMK is sufficient. Customer-managed CMK allows more fine-grained control over the creation,
             rotation, deletion, and usage of the key. For example, a customer-managed CMK can be imported into AWS by the customer,
             or the customer can choose to let KMS generate the key. A customer-managed CMK is sometimes needed due to <b>compliance</b> requirements.
-            (If the requirements are particularly stringent, you may need to use CloudHSM instead of KMS.)
+            (If the requirements are particularly stringent, you may need to attach CloudHSM to KMS.)
         `
     },
     {
@@ -832,5 +839,261 @@ const aws_cards = [
                 <li>If you do not want traffic to cross the internet, you may be able to establish a <i>Direct Connect</i> connection, which is a dedicated network connection between your on-premises network and an AWS edge location (from where traffic is routed to your AWS resources using AWS' internal networks).</li>
             </ul>
         `
+    },
+    {
+        "q": "How can you control access to your KMS CMK (Key Management Service Customer Master Key)?",
+        "a": `
+                KMS access control<br><br>
+                <ul>
+                    <li><b>Key policies</b> control access to specific CMKs.</li>
+                    <li><b>IAM policies</b> can control access to multiple CMKs. IAM policies can also control access to operations such as <i>CreateKey</i>.</li>
+                    <li><b>Grants</b> can be used to provide <i>temporary</i> and granular access to to other AWS identities (even a user outside your AWS account).</li>
+                    <li><b>VPC endpoint policies</b> allow connections to KMS directly via a VPC endpoint, without crossing the internet. Note that a VPC endpoint policy needs to be accompanied by either a key policy, IAM policy or a grant.</li>
+                </ul>
+        `
+    },
+    {
+        "q": "List options for key management when encrypting S3 data at rest.",
+        "a": `S3 encryption key management options<br><br>
+                <ul>
+                    <li><b>SSE-S3</b>: data keys managed by S3</li>
+                    <li><b>SSE-C</b>: data keys managed by customer (customer must send data key with each write/read request)</li>
+                    <li><b>SSE-KMS</b>: data keys managed by KMS, which will encrypt/decrypt data key with CMK (Customer Master Key). The CMK may be either customer-managed or AWS-managed. In addition, CMK may be integrated with CloudHSM, in which case CloudHSM would handle the master key.</li>
+                </ul>
+
+        `
+    },
+    {
+        "q": "If you need to set up network connectivity for a large enterprise with many VPCs, how can <i>Direct Connect Gateway</i> and <i>AWS Transit Gateway</i> simplify your network configuration?",
+        "a": `
+            <ul>
+                <li><b>Direct Connect:</b> private connection between AWS and customer network. Alternatively, you can set up a Site-to-Site VPN over the internet.</li>
+                <li><b>Direct Connect Gateway</b>: if you have multiple VPCs in different regions, but in the same AWS account, then Direct Connect Gateway can help you access access all VPCs from the customer network.</li>
+                <li><b>AWS Transit Gateway</b>: if you have multiple VPCs in multiple AWS accounts, you can connect everything to a Transit Gateway, which can facilitate connections between all VPCs and all customer networks connected via VPN or Direct Connect Gateway.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "You have an EC2 instance in a private subnet, and it needs to access the internet for software updates. You set up a NAT gateway in the same subnet to provide outbound internet access for the EC2 instance. The EC2 instance is still unable to connect to the internet. Why?",
+        "a": "NAT gateway must be set up in a <i>public</i> subnet. Otherwise it does not have a route to the internet."
+    },
+    {
+        "q": "What is the difference between a NAT gateway and a NAT instance?",
+        "a": "Both NAT gateway and NAT instance are used to forward traffic from instances in a private subnet to the internet or other AWS services. NAT instance is a legacy, client-managed solution, whereas NAT gateway is a newer, AWS-managed service. If you manage a NAT instance by yourself, you need to deal with security patches, scaling, failover, etc."
+    },
+    {
+        "q": "Can you protect your EC2 instance with a Web Application Firewall (WAF)?",
+        "a": `You can not attach WAF directly to an EC2 instance.
+            However, you can attach WAF to a service that may be running in front of your EC2 instance:<br><br>
+            <ul>
+                <li>Application Load Balancer</li>
+                <li>CloudFront distribution</li>
+                <li>API Gateway (REST APIs and WebSocket APIs)</li>
+                <li>AppSync (GraphQL APIs)</li>
+            </ul>
+            `
+    },
+    {
+        "q": "What can you do with Web Application Firewall (WAF) <i>rules</i>?",
+        "a": `Web Application Firewall rules<br><br>
+
+                <ul>
+                    <li>Block or rate-limit traffic</li>
+                    <li>Rules can be maintained by the client, by AWS, or purchased from the AWS Marketplace</li>
+                    <li>WAF rules might be used to block bot traffic, SQL injections, XSS attacks, etc.</li>
+                </ul>
+
+        `
+    },
+    {
+        "q": "What is AWS Global Accelerator?",
+        "a": `AWS Global Accelerator is a costly AWS network service intended to improve latency for your internet end users.
+            Similar to CloudFront or S3 Transfer Acceleration, AWS Global Accelerator utilizes anycast IPs to route end users'
+            requests to the nearest AWS edge location. The edge location then routes traffic to your AWS resources via AWS'
+            private networks, thus bypassing the internet.
+        `
+    },
+    {
+        "q": "Where can you configure SSL certificates?",
+        "a": `
+            SSL certificates on AWS<br><br>
+            <ul>
+                <li><b>EC2</b>: manually configure SSL certificate renewal on your EC2 instances.</li>
+                <li><b>Amazon Certificate Manager</b> (ACM): your preferred option for managing SSL certificates. Terminates SSL at the Load Balancer (or CloudFront) level instead of the EC2 level, so the connection will not be end-to-end encrypted.</li>
+                <li><b>IAM certificate storage</b>: legacy option for managing SSL certificates in IAM.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Describe API Gateway.",
+        "a": `API Gateway<br><br>
+
+                <ul>
+                    <li>Instead of providing a public API directly from your application layer, you may want to place an API Gateway in front of it.</li>
+                    <li>API Gateway can be used for REST APIs and WebSocket APIs.</li>
+                    <li>API Gateway can provide authorization, throttling, caching, and other useful features.</li>
+                </ul>
+        
+        `
+    },
+    {
+        "q": "Can you set up an API Gateway in front of a legacy application that provides a SOAP API?",
+        "a": `
+            <ul>
+                <li>API Gateway is typically used for REST APIs or WebSocket APIs.</li>
+                <li>The terms \"REST\" and \"SOAP\" are strangely redefined in AWS terminology. In an AWS certificate exam, \"REST\" simply means \"JSON\" and \"SOAP\" simply means \"XML"\.</li>
+                <li>API Gateway can be used to transform XML to JSON, and vice versa. That means it can provide a public JSON API, while passing data to a legacy service in XML.</li>
+                <li>In reality you can not transform a non-restful API into a REST API simply by converting XML to JSON, but if the exams ask about this, you need to lie.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Can you use private certificates with Amazon Certificate Manager?",
+        "a": "You can use private certificates with Amazon Certificate Manager, but they are so expensive that it may be more economical to set up a custom solution on EC2 instead."
+    },
+    {
+        "q": "Which AWS services are directly protected by AWS Shield?",
+        "a": `<div class="text-left">Services directly protected by AWS Shield:</div><br>
+                <ul>
+                    <li>Elastic Load Balancer (ELB)</li>
+                    <li>CloudFront</li>
+                    <li>Route 53</li>
+                </ul><br>
+                <div class="text-left">These would be typical entry points for your AWS resources, so other services may be indirectly protected.</div>
+        
+        `
+    },
+    {
+        "q": "Describe billing for AWS Shield.",
+        "a": `
+            AWS Shield billing<br><br>
+            <ul>
+                <li>Basic features are free.</li>
+                <li>Shield Advanced costs $3000/month.</li>
+                <li>Shield Advanced covers costs incurred due to usage spikes from DDoS attacks.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "What is ADFS and where would you set it up?",
+        "a": `ADFS stands for <i>Active Directory Federation Services</i>.
+                ADFS is an <i>identity broker</i> which provides <i>single sign-on</i> functionality for your enterprise users
+                to access AWS resources via AWS Console, without the need to duplicate the user accounts to IAM.
+                In order to sign in, a user sends a request to on-premises ADFS, which authenticates the user from on-premises AD and returns
+                a SAML token to the user. The user's web browser then forwards this SAML token to AWS Sign-In, which
+                verifies that the token originates from a trusted ADFS service, then fetches the desired identity from IAM,
+                and provides the user access to AWS Console under this identity.
+        `
+    },
+    {
+        "q": "You are trying to provide S3 bucket access to another AWS account, but it is not working. What kind of things should you check while troubleshooting?",
+        "a": `Troubleshooting cross-account S3 access issues<br><br>
+                <ul>
+                    <li>Is the external AWS account trusted?</li>
+                    <li>Does the IAM policy in the external account allow calling STS:AssumeRole?</li>
+                    <li>Does the IAM policy in the trusting account allow the action?</li>
+                    <li>Is there an S3 bucket policy which prevents access?</li>
+                    <li>Is there a bucket ACL policy which prevents access?</li>
+                </ul>
+
+        `
+    },
+    {
+        "q": "When should you choose MQ over SQS/SNS?",
+        "a": `
+            <ul>
+                <li><b>MQ</b> is AWS' managed message broker service for ActiveMQ and RabbitMQ. Choosing MQ makes sense when you are migrating to AWS with an existing architecture that already relies on ActiveMQ or RabbitMQ.</li>
+                <li><b>SQS</b> and <b>SNS</b> are native AWS messaging services. AWS recommends choosing SQS or SNS for new workloads, rather than MQ.</li> 
+            </ul>
+        `
+    },
+    {
+        "q": "Compare SQS and SNS.",
+        "a": `
+            <ul>
+                <li><b>SQS</b> (Simple Queue Service) provides a pull-based message queue. Choose SQS when you want messages to be consumed only once by a single consumer.</li>
+                <li><b>SNS</b> (Simple Notification Service) provides push-based message delivery for <i>multiple</i> subscribers. SNS also offers email as a subscriber protocol, allowing you to easily set up automated email notifications.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "In the context of SQS, explain the difference between <i>short polling</i> and <i>long polling</i>.",
+        "a": `
+            <ul>
+                <li><b>Short polling</b> means \"normal\" polling, where you try to poll a message from the SQS queue, and you either get a message, or you are told that the queue is empty.</li>
+                <li><b>Long polling</b> works differently in the case where the queue is empty. Instead of immediately responding that the queue is empty, SQS will wait a while to see if a message is published to the queue. If no message is published before the long poll timeout expires, SQS returns that the queue is empty. Long polling is useful to reduce polling frequency (costs) and it allows you to respond to published messages faster.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Can you publish messages to an SQS queue by interacting with an API?",
+        "a": `
+                In order to publish messages to an SQS queue, you need to use the <b>AWS SDK</b>. Technically, the SDK will generate
+                an API request to an AWS API, but developers typically do not interact directly with this API. If you wish to have a
+                REST API that your applications can use to publish messages to a SQS queue, you need to deploy an application which
+                uses AWS SDK under the hood and provides that REST API for your other applications.
+        `
+    },
+    {
+        "q": "Compare SQS <i>standard queue</i> and <i>FIFO queue</i>.",
+        "a": `
+        <div class="text-left"><b>SQS standard queue:</b></div><br>
+            <ul>
+                <li>Unlimited number of transactions per second</li>
+                <li>Messages will usually be delivered once, but will sometimes be delivered more than once</li>
+                <li>Messages may be delivered out of order</li>
+            </ul><br>
+        <div class="text-left"><b>SQS FIFO queue:</b></div><br>
+            <ul>
+                <li>First In First Out (guaranteed order)</li>
+                <li>No duplicates</li>
+                <li>Limited to 300 transactions per second</li>
+            </ul>
+        `
+    },
+    {
+        "q": "You have an architecture where workers are polling tasks from SQS. You are using a FIFO queue to guarantee that the same task is never processed more than once. However, you notice that <i>occasionally</i> multiple workers end up duplicating work for the same task. How should you troubleshoot this?",
+        "a": `Potential causes for SQS FIFO duplicates<br><br>
+                <ul>
+                    <li>First, you should check if the workers are really processing the same SQS queue item, or if the same item was accidentally <b>published to the queue twice</b>.</li>
+                    <li>If the same SQS FIFO queue item is really polled from the queue multiple times, you may have misconfigured your <b>visibility timeout</b>. Suppose your visibility timeout is configured at the default 30 seconds, and a typical task is finished in 10 seconds. Now, suppose an atypical task takes 35 seconds to complete; after 30 seconds it would be returned to the queue.</li>
+                </ul>
+                
+        `
+    },
+    {
+        "q": "Explain SQS visibility timeout.",
+        "a": "SQS visibility timeout is used to guarantee that a message won't be lost if a worker fails while processing the message. If a message is polled from the queue, and the worker doesn't delete the message within the visibility timeout (30 seconds by default), then the message will be returned to the queue, so it can be picked up by another worker."
+    },
+    {
+        "q": "Does SQS queue persist messages or are they ephemeral?",
+        "a": "Messages persist in SQS queue until they are consumed (polled and deleted), or until the message retention period is reached. Message retention is 4 days by default, and it's adjustable between 60 seconds and 14 days."
+    },
+    {
+        "q": "How large can SQS queue messages be?",
+        "a": `
+                SQS queue messages can be between 1 byte and 256KiB. If you need to support larger messages, you can use the <i>Amazon SQS Extended Client Library For Java</i>, which offloads storage to S3. If you are not using Java, you have to create your own solution to support larger messages.
+        `
+    },
+    {
+        "q": "AWS root user is not supposed to be used for daily tasks. What is the simplest way to set up email notifications to alert you when the root user logs in?",
+        "a": `You can set up a <b>CloudWatch Events Rule</b> to publish a message to <b>SNS</b> when the root user logs in. Then add the necessary email subscriptions to the SNS topic.
+        `
+    },
+    {
+        "q": "What is the Simple Notification Service (SNS)?",
+        "a": `
+                Simple Notification Service (SNS)<br><br>
+                <ul>
+                    <li>Push-based message delivery service</li>
+                    <li>Multiple subscribers can subscribe to the same SNS topic</li>
+                    <li>Supports multiple subscriber protocols (Lambda, SQS, E-mail, ...)</li>
+                    <li>Publisher is isolated from subscriber protocols</li>
+                </ul>
+        `
+    },
+    {
+        "q": "Can you poll a message from an SNS topic?",
+        "a": "SNS is push-based, not pull-based, so you can not poll messages from SNS. You can subscribe to an SNS topic, and messages will be pushed to you. If you want to set up a poll-based message delivery, you may want to consider SQS instead."
     }
 ]
