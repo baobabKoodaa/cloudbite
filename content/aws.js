@@ -491,19 +491,20 @@ const aws_cards = [
         "a": `
             DynamoDB capacity options<br><br>
             <ul>
-                <li>Provisioned throughput capacity: you define the read and write capacity units.</li>
-                <li>On-demand capacity: auto-scaling for read and write capacity units.</li>
+                <li><b>Provisioned throughput capacity:</b> you define the minimum read and write capacity units, and optionally, auto-scaling with target utilization and maximum capacity units.</li>
+                <li><b>On-demand capacity:</b> no capacity configuration, AWS provides you the capacity you need and your requests are never throttled. Read and write operations are more expensive than in provisioned capacity mode, but idle tables are less expensive.</li>
             </ul>
         `
     },
     {
         "q": "Your DynamoDB database is occasionally returning <i>ProvisionedThroughputExceededException</i> to API requests. What can you do about it?",
-        "a": `<div class="text-left"><i>ProvisionedThroughputExceededException</i> occurs when you are sending too many requests
-        relative to the read or write capacity that you have defined for the DynamoDB database. Your options are:</div><br>
+        "a": `<div class="text-left"><i>ProvisionedThroughputExceededException</i> means you are exceeding your read/write capacity.
+        This may be caused by a <i>hot partition</i> (badly chosen partition key causing too many items to be placed onto the same partition).
+        In other cases, you can:</div><br>
         <ul>
             <li>Manually increase read/write capacity units.</li>
-            <li>Change from manually provisioned capacity to auto-scaled capacity, which guarantees you will never be rate-limited.</li>          
-            <li>Do nothing? If you are sending requests to DynamoDB via AWS SDK, you should already be using automatic retries with exponential backoff. If the errors are only occasional, the requests are eventually accepted with retries.</li>
+            <li>Change from manually provisioned capacity to on-demand capacity, which guarantees you will never be rate-limited.</li>          
+            <li>Do nothing? AWS SDK has automatic retries with exponential backoff. If the errors are only occasional, the requests are eventually accepted with retries.</li>
         </ul>
         `
     },
@@ -1095,5 +1096,33 @@ const aws_cards = [
     {
         "q": "Can you poll a message from an SNS topic?",
         "a": "SNS is push-based, not pull-based, so you can not poll messages from SNS. You can subscribe to an SNS topic, and messages will be pushed to you. If you want to set up a poll-based message delivery, you may want to consider SQS instead."
+    },
+    {
+        "q": "If you need to migrate existing Chef or Puppet instances to AWS, which AWS service might be useful to you?",
+        "a": "<b>AWS OpsWorks</b> provides managed instances of Chef and Puppet (which are used to automate server configurations)."
+    },
+    {
+        "q": "Explain the relationship between Serverless Application Model (SAM) and CloudFormation.",
+        "a": `
+                SAM templates are an extension of CloudFormation templates (syntactic sugar over CloudFormation). When you want to run a SAM template, AWS first transpiles the SAM template into a CloudFormation template.
+        `
+    },
+    {
+        "q": "What is the Cloud Development Kit (CDK)?",
+        "a": "Cloud Development Kit (CDK) allows you to write in TypeScript (or another language), in imperative style, and transpile the code into CloudFormation templates."
+    },
+    {
+        "q": "Meteor strike destroys an entire AWS region. Naturally, your first thought is \"<i>how can I re-deploy my employer's AWS resources in another region as quickly as possible?</i>\" Explain how.",
+        "a": `
+                <ul>
+                    <li>If your AWS resources had been configured manually in AWS console, it will be time-consuming to recreate everything in another region, and there will be some differences once you're finished.</li>
+                    <li>If your AWS resources had been configured with CloudFormation templates, you will be able to re-deploy everything quickly, with minor modifications to the templates.</li>
+                    <li>Hopefully all of your important data was cross-region duplicated.</li>
+                </ul>
+        `
+    },
+    {
+        "q": "If you need to migrate a MongoDB database to AWS, which AWS service might be helpful to you?",
+        "a": "<b>AWS DocumentDB</b> is a MongoDB-compatible managed database service."
     }
 ]
