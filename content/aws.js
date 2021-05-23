@@ -208,6 +208,17 @@ const aws_cards = [
              `
     },
     {
+        "q": "Which protocols does AWS IAM support for identity federation?",
+        "a": `
+        <div class="text-left">AWS IAM identity federation protocols:</div><br>
+            <ul>
+                <li>SAML 2.0 (e.g. Microsoft AD)</li>
+                <li>OpenID Connect 2.0 (e.g. OAuth)</li>
+            </ul><br>
+            <div class="text-left">Also note that if you wish to federate access for your web or mobile end users, AWS recommends using Cognito for identity federation instead of setting up federation via IAM.</div>
+        `
+    },
+    {
         "q": "Compare CloudFront origin requests and viewer requests.",
         "a": "CloudFront origin requests are cacheable, whereas viewer requests are never cached."
     },
@@ -225,6 +236,37 @@ const aws_cards = [
                     <li><b>Shield</b> is a DDoS protection service</li>
                 </ul>
              `
+    },
+    {
+        "q": "Compare GuardDuty and Inspector.",
+        "a": `
+            GuardDuty vs Inspector<br><br>
+            <ul>
+                <li>Inspector identifies vulnerabilities, whereas GuardDuty monitors logs for suspicious traffic.</li>
+                <li>Inspector is rule-based, whereas GuardDuty utilizes machine learning and threat intelligence.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Provide examples of the kind of the vulnerabilities that may be reported by AWS Inspector.",
+        "a": `
+            AWS Inspector examples:<br><br>
+            <ul>
+                <li>Unintended network access</li>
+                <li>Remote root login enabeld on an EC2 instance</li>
+                <li>Vulnerable software versions</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Which sources does GuardDuty monitor for threat detection?",
+        "a": `GuardDuty monitors various logs, including:<br><br>
+            <ul>
+                <li>CloudTrail logs</li>
+                <li>VPC Flow logs</li>
+                <li>DNS logs</li>
+            </ul>
+        `
     },
     {
         "q": "How should you serve static web assets on AWS?",
@@ -682,6 +724,35 @@ const aws_cards = [
         `
     },
     {
+        "q": "How long can you retain CloudTrail logs?",
+        "a": `CloudTrail retains logs for <b>90 days</b> by default. If you need to retain CloudTrail logs for longer than 90 days, you need to
+                create a <i>Trail</i> which logs to S3 bucket. Additionally, you should turn on <i>Log File Validation</i> in S3
+                to ensure that tampering with log files can be detected.
+            `
+    },
+    {
+        "q": "What kind of events are logged by CoudTrail?",
+        "a": `
+            <div class="text-left">
+                <b>Management events</b> are always logged:
+            </div><br>
+            <ul>
+                <li>Configuring security</li>
+                <li>Registering devices</li>
+                <li>Configuring rules for routing data</li>
+                <li>Setting up logging</li>
+            </ul><br>
+            <div class="text-left">
+                <b>Data events</b> logging can be turned on:
+            </div><br>
+            <ul>
+                <li>Only S3 and Lambda can log data events</li>
+                <li>GetObject, DeleteObject, PutObject, etc.</li>
+            </ul>
+        
+        `
+    },
+    {
         "q": "In the context of KMS CMK (Key Management Service Customer Master Key), compare customer-managed CMK to AWS-managed CMK.",
         "a": `
             For typical use cases, AWS-managed CMK is sufficient. Customer-managed CMK allows more fine-grained control over the creation,
@@ -1124,5 +1195,86 @@ const aws_cards = [
     {
         "q": "If you need to migrate a MongoDB database to AWS, which AWS service might be helpful to you?",
         "a": "<b>AWS DocumentDB</b> is a MongoDB-compatible managed database service."
+    },
+    {
+        "q": "Compare <i>X-Ray</i> to <i>App Mesh</i>.",
+        "a": `
+            <ul>
+                <li>Both <b>X-Ray</b> and <b>App Mesh</b> are profilers for microservices.</li>
+                <li>A profiler collects data to pinpoint where failures occur and what causes poor performance.</li>
+                <li>With X-Ray you need to attach interceptors to your microservices, with App Mesh you attach a proxy in front of each microservice.</li>
+            </ul>
+            `
+    },
+    {
+        "q": "Which CloudWatch metrics are available by default and which require installing CloudWatch agent onto the EC2 instance?",
+        "a": `
+            <ul>
+                <li><b>Usage</b> metrics are available by default: CPU usage, network usage, disk usage, status checks (hypervisor, ec2 instance).</li>
+                <li><b>Utilization</b> metrics require installing CloudWatch Agent onto the EC2 instance: memory utilization, disk swap utilization, disk space utilization, page file utilization.</li>
+                <li>Log collection from applications also requires installing CloudWatch Agent.</li>
+            </ul>
+        `
+    },
+    {
+        "q": "At what <i>interval</i> are CloudWatch metrics gathered?",
+        "a": `
+                Most services typically log metrics to CloudWatch at 1-minute intervals, but EC2 logs at 5-minute intervals
+                (you can turn on EC2 detailed monitoring to log at 1-minute intervals, at extra cost).
+        `
+    },
+    {
+        "q": "List IAM identities.",
+        "a": `
+            IAM identities<br><br>
+            <ul>
+                <li>IAM Users</li>
+                <li>IAM Groups</li>
+                <li>IAM Roles</li>
+            </ul>
+        `
+    },
+    {
+        "q": "Describe use cases for IAM roles.",
+        "a": `
+            <div class="text-left">IAM role is an <i>identity</i>, like a <i>user</i> or a <i>group</i>. A role can be assumed by a user, but it can also be assumed without a user. Use case examples:</div><br>
+            <ul>
+                <li>Allow an application to access AWS resources without embedding keys/credentials in the app.</li>
+                <li>Segregate production and test environments with corresponding roles for developers to take as needed (in order to prevent accidents).</li>
+                <li>Grant users in one AWS account access to resources in another account.</li>
+                <li>Provide access to users who have identities defined outside of AWS, such as on-prem AD.</li>
+            </ul>
+            
+        `
+    },
+    {
+        "q": "What is the Security Token Service (STS)?",
+        "a": `
+            Security Token Service (STS) provides temporary credentials for identities (such as IAM users, applications that assume an IAM role, or federated identities). The application or user that receives these temporary credentials can then use those credentials to access some AWS resources for a limited time.
+        `
+    },
+    {
+        "q": "Compare IAM access keys and temporary security credentials.",
+        "a": `Both IAM access keys and temporary security credentials can be used for programmatic access to AWS resources. The difference is that temporary security credentials expire (typically within 1 hour).`
+    },
+    {
+        "q": "Should you store credentials inside Secrets Manager or Parameter Store?",
+        "a": `
+            Both Parameter Store and Secrets Manager can be used to store secrets. Parameter Store is free, Secrets Manager costs a little bit.
+            AWS recommends using Secrets Manager mainly due to its automatic
+            secret rotation feature. (However, automatic secret rotation is shipped with several footguns, so in practice you may wish to consider
+            twice if you want to set it up.)
+        `
+    },
+    {
+        "q": "Describe key features of <i>AWS Organizations</i>.",
+        "a": `
+        <div class="text-left"><b>AWS Organizations</b> allows you to control multiple AWS accounts within a single organization.</div><br>
+            <ul>
+                <li>Accounts can be grouped within <i>Organizational Units</i> (OU).</li>
+                <li>You can <i>consolidate billing</i> from multiple accounts to gain volume discounts.</li>
+                <li>You can apply <i>Service Control Policies</i> to set boundaries for different accounts or OUs.</li>
+            </ul>
+        `
     }
 ]
