@@ -156,6 +156,30 @@ ul {
     cursor: pointer;
 }
 
+#deck-filter {
+    position: absolute;
+    right: 15px;
+    top: 25px;
+}
+
+#deck-filter input {
+    background-color: #ffe8d6;
+    width: 200px;
+    border-radius: 5px;
+    border-color: #ddbea9;
+}
+
+#deck-filter-clear-button {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    cursor: pointer;
+}
+
+#deck-filter-clear-button .svg-container {
+    width: 18px !important;
+}
+
 .deck-option {
     position: absolute;
     top: -85px;

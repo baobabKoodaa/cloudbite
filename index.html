@@ -249,6 +249,21 @@
                 <img src="assets/logo_gcp.svg" class="cloud-provider-on-deck" id="cloud-provider-on-deck-gcp" />
                 <div class="coming-soon-text" id="coming-soon-text-gcp" style="color: #5f6368">(Coming soon)</div>
             </div>
+
+            <!-- Deck filter -->
+            <div id="deck-filter" style="visibility: hidden">
+                <input type="text" id="deck-filter-input" placeholder="Custom filter (e.g. 'RDS')" />
+                <div id="deck-filter-clear-button" style="visibility: hidden" onClick="deckFilterClear()" title="Clear filter" alt="Clear filter">
+                    <svg class="svg-container" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="#b7b7a4">
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                </div>
+            </div>
         </div>
 
         <textarea id="add-card-input">

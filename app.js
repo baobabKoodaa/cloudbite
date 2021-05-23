@@ -65,6 +65,11 @@ const onToggleUserCard = function () {
     }
 };
 
+const deckFilterClear = function () {
+    get("deck-filter-clear-button").style.visibility = "hidden";
+    get("deck-filter-input").value = "";
+};
+
 const onMouseDownCard = function (event) {
     mouseDownCard = {
         x: event.clientX || event.targetTouches[0].pageX,
@@ -151,6 +156,15 @@ document.addEventListener("keydown", (e) => {
         // Disable keyboard shortcuts while the add-new-card input is open.
         return;
     }
+    if (get("deck-filter").style.visibility == "visible") {
+        if (e.code === "Enter") {
+            // If deck filter is visible, user is choosing deck / setting a custom filter and pressing enter.
+            // Assume that user wants to re-select previously chosen deck, with possibly new filters.
+            deckSelectionClose(currentDeck);
+        }
+        // Prevent other keydown events when deck filter is visible.
+        return;
+    }
     if (e.code === "ArrowRight" || e.code === "ArrowUp") {
         repeatLater();
     } else if (e.code === "ArrowDown" || e.code === "ArrowDown") {
@@ -159,6 +173,17 @@ document.addEventListener("keydown", (e) => {
         flip(180);
     } else if (e.code === "Space") {
         flip(-180);
+    }
+});
+
+// Event listener to display or hide the "clear filter" button.
+document.addEventListener("keyup", (e) => {
+    if (get("deck-filter").style.visibility == "visible") {
+        if (get("deck-filter-input").value != "") {
+            get("deck-filter-clear-button").style.visibility = "visible";
+        } else {
+            get("deck-filter-clear-button").style.visibility = "hidden";
+        }
     }
 });
 
@@ -359,15 +384,51 @@ const throwAwayCard = function (translateX, translateY) {
     get("flip-card-outer-container").style.transform = `translate(${translateX}px, ${translateY}px) scale(0)`;
 };
 
+const tokenize = function (text) {
+    let tokens = [];
+    let curr = "";
+    for (let i = 0; i < text.length; i++) {
+        const c = text[i];
+        if ("abcdefghijklmnopqrstuvwxyz0123456789".includes(c)) {
+            curr += c;
+        } else if (curr !== "") {
+            tokens.push(curr);
+            curr = "";
+        }
+    }
+    return tokens;
+};
+
+const doesCardMatchSearchQuery = function (card, searchQuery) {
+    if (searchQuery.includes(" ") || searchQuery.includes("-")) {
+        // If search query includes space or dash, we can do a simple search without worrying about false positives.
+        return card.q.toLowerCase().includes(searchQuery.toLowerCase()) || card.a.toLowerCase().includes(searchQuery.toLowerCase());
+    }
+    // Otherwise, we may have issues with false positives.
+    // For example, search "RDS" will match to text "birds".
+    // To prevent false positives, we need to tokenize and search for token match.
+    tokenized = tokenize(card.q.toLowerCase() + "," + card.a.toLowerCase());
+    for (let i = 0; i < tokenized.length; i++) {
+        if (tokenized[i] === searchQuery.toLowerCase()) {
+            return true;
+        }
+    }
+    return false;
+};
+
 const changeCurrentCard = function () {
     let minPrio = Number.POSITIVE_INFINITY;
     let minCard = null;
+    let searchQuery = get("deck-filter-input").value;
     for (let i = 0; i < flipcards.length; i++) {
         const card = flipcards[i];
         if (card.deck != currentDeck) {
             continue;
         }
         if (card === currentCard) {
+            continue;
+        }
+        if (searchQuery && !doesCardMatchSearchQuery(card, searchQuery)) {
             continue;
         }
         const prio = card.prio + Math.random(); // Random (between 0-1) is useful to break ties (shuffle).
@@ -381,6 +442,9 @@ const changeCurrentCard = function () {
             q: "Whoops, looks like we ran out of cards.",
             a: "Nothing to see here.",
         };
+        if (get("deck-filter-input").value != "") {
+            minCard.q += ` You are currently filtering the deck for '${get("deck-filter-input").value}'. Try modifying your search query?`;
+        }
     }
     currentCard = minCard;
 };
@@ -423,6 +487,8 @@ const renderRealCard = function () {
 const deckSelectionOpen = function () {
     throwAwayCard(-260, -270);
     disableButtons();
+    // deck filter
+    get("deck-filter").style.visibility = "visible";
     // aws deck option
     get("deck-option-aws").style.top = "0px";
     get("deck-option-aws").style.visibility = "visible";
@@ -453,6 +519,8 @@ const deckSelectionClose = function (choice) {
     // set deck and draw new currentCard from deck
     currentDeck = choice;
     changeCurrentCard();
+    // deck filter
+    get("deck-filter").style.visibility = "hidden";
     // animate aws deck option
     get("deck-option-aws").style.top = "-85px"; /* 0.4s transition */
     get("deck-option-aws").style.visibility = "hidden"; /* 0.4s transition */
