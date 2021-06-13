@@ -8,17 +8,17 @@ for (let i = 0; i < aws_cards.length; i++) {
 }
 // TEST deck
 for (let i = 0; i < 3; i++) {
-    const card = { "q": ""+i, "a": ""+i, "deck": "test" }
+    const card = { q: "" + i, a: "" + i, deck: "test" };
     flipcards.push(card);
 }
 
 const setCurrentDeck = function (choice) {
-    if (choice != 'aws' && choice != 'test') {
-        choice = 'aws'
+    if (choice != "aws" && choice != "test") {
+        choice = "aws";
     }
     currentDeck = choice;
-    window.history.replaceState("", "", `?deck=${choice}`)
-}
+    window.history.replaceState("", "", `?deck=${choice}`);
+};
 
 // Constants
 const PRIO_INITIAL = 1000;
@@ -28,8 +28,14 @@ const PRIO_INCREASE_NEVER = Number.POSITIVE_INFINITY;
 const LOCAL_STORAGE_KEY = "cloudbite-userdata";
 const LOCAL_STORAGE_DUPLICATE_DETECTION_KEY = "cloudbite-latest-session-id";
 
+// Read query parameters before modifying URL
+let queryParams = new URL(window.location.href).searchParams;
+let possibleDeckQueryParam = queryParams.get("deck");
+let possibleCardQueryParam = queryParams.get("card");
+
 // State
-setCurrentDeck(new URL(window.location.href).searchParams.get("deck"));
+setCurrentDeck(possibleDeckQueryParam);
+let forceCurrentCard = possibleCardQueryParam;
 let flipped = false;
 let currentCard = null;
 let permanentRotation = 0;
@@ -364,7 +370,7 @@ const initializeUserSession = function () {
         aws: Number.POSITIVE_INFINITY,
         azure: Number.POSITIVE_INFINITY,
         gcp: Number.POSITIVE_INFINITY,
-        test: Number.POSITIVE_INFINITY
+        test: Number.POSITIVE_INFINITY,
     };
     for (let i = 0; i < flipcards.length; i++) {
         const c = flipcards[i];
@@ -440,6 +446,11 @@ const changeCurrentCard = function () {
         if (card.deck != currentDeck) {
             continue;
         }
+        if (forceCurrentCard && card.hash == forceCurrentCard) {
+            minCard = card;
+            forceCurrentCard = undefined;
+            break;
+        }
         if (card === currentCard) {
             continue;
         }
@@ -452,10 +463,12 @@ const changeCurrentCard = function () {
             minCard = card;
         }
     }
-    if (!minCard) {
+    if (minCard) {
+        window.history.replaceState("", "", `?deck=${currentDeck}&card=${minCard.hash}`);
+    } else {
         minCard = {
-            q: "Whoops, looks like we ran out of cards.",
-            a: "Nothing to see here.",
+            q: `Whoops, looks like we ran out of ${currentDeck} cards.`,
+            a: `Nothing to see here.`,
         };
         if (get("deck-filter-input").value != "") {
             minCard.q += ` You are currently filtering the deck for '${get("deck-filter-input").value}'. Try modifying your search query?`;
