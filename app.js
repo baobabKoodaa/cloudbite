@@ -441,6 +441,9 @@ const changeCurrentCard = function () {
     let minPrio = Number.POSITIVE_INFINITY;
     let minCard = null;
     let searchQuery = get("deck-filter-input").value;
+    if (!forceCurrentCard) {
+        get("warning-direct-link").style.visibility = "hidden";
+    }
     for (let i = 0; i < flipcards.length; i++) {
         const card = flipcards[i];
         if (card.deck != currentDeck) {
@@ -449,6 +452,7 @@ const changeCurrentCard = function () {
         if (forceCurrentCard && card.hash == forceCurrentCard) {
             minCard = card;
             forceCurrentCard = undefined;
+            get("warning-direct-link").style.visibility = "visible";
             break;
         }
         if (card === currentCard) {
