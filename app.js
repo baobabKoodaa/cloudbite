@@ -601,6 +601,14 @@ const repeatNever = function () {
 
 const switchCard = function (prioIncrease, translateX, translateY) {
     currentCard.prio += prioIncrease;
+    if (prioIncrease === PRIO_INCREASE_LATER) {
+        // Fix issue where some typical use patterns may cause cards to cycle in quasi-predictable order.
+        // The idea with this fix is that as the user clicks "later" to several cards, those cards
+        // should land in the "same bucket", regardless of what the user previously clicked for them.
+        // For example, if a card has prio 1034 and another card has prio 1035, clicking "later" for both
+        // of these cards will land them in the 1040 bucket, as opposed to different buckets (1044 and 1045).
+        currentCard.prio = currentCard.prio - (currentCard.prio % PRIO_INCREASE_LATER);
+    }
     const minPrioFromOtherCards = getMinPrio(currentCard);
     if (currentCard.prio < minPrioFromOtherCards) {
         // When a card is seen, its prio should always jump to AT LEAST the next card's prio.
