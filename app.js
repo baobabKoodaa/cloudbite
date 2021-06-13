@@ -1,9 +1,23 @@
 // Shove all cards from all decks into flipcards.
 flipcards = [];
+// AWS deck
 for (let i = 0; i < aws_cards.length; i++) {
     const card = aws_cards[i];
     card.deck = "aws";
     flipcards.push(card);
+}
+// TEST deck
+for (let i = 0; i < 3; i++) {
+    const card = { "q": ""+i, "a": ""+i, "deck": "test" }
+    flipcards.push(card);
+}
+
+const setCurrentDeck = function (choice) {
+    if (choice != 'aws' && choice != 'test') {
+        choice = 'aws'
+    }
+    currentDeck = choice;
+    window.history.replaceState("", "", `?deck=${choice}`)
 }
 
 // Constants
@@ -15,7 +29,7 @@ const LOCAL_STORAGE_KEY = "cloudbite-userdata";
 const LOCAL_STORAGE_DUPLICATE_DETECTION_KEY = "cloudbite-latest-session-id";
 
 // State
-let currentDeck = "aws";
+setCurrentDeck(new URL(window.location.href).searchParams.get("deck"));
 let flipped = false;
 let currentCard = null;
 let permanentRotation = 0;
@@ -350,6 +364,7 @@ const initializeUserSession = function () {
         aws: Number.POSITIVE_INFINITY,
         azure: Number.POSITIVE_INFINITY,
         gcp: Number.POSITIVE_INFINITY,
+        test: Number.POSITIVE_INFINITY
     };
     for (let i = 0; i < flipcards.length; i++) {
         const c = flipcards[i];
@@ -365,7 +380,7 @@ const initializeUserSession = function () {
         }
     }
     // Deal with special case where new cards are added after old cards have drifted far away in userData prios.
-    ["aws", "azure", "gcp"].forEach((deck) => {
+    ["aws", "azure", "gcp", "test"].forEach((deck) => {
         const minPrioInUserData = minPriosInUserData[deck];
         if (minPrioInUserData - PRIO_INITIAL > PRIO_INCREASE_LATER && minPrioInUserData < PRIO_INCREASE_NEVER) {
             for (let i = 0; i < flipcards.length; i++) {
@@ -516,8 +531,9 @@ const deckSelectionOpen = function () {
 };
 
 const deckSelectionClose = function (choice) {
-    // set deck and draw new currentCard from deck
-    currentDeck = choice;
+    // set deck
+    setCurrentDeck(choice);
+    // draw new currentCard from deck
     changeCurrentCard();
     // deck filter
     get("deck-filter").style.visibility = "hidden";
