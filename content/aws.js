@@ -731,7 +731,7 @@ const aws_cards = [
             `
     },
     {
-        "q": "What kind of events are logged by CoudTrail?",
+        "q": "What kind of events are logged by CloudTrail?",
         "a": `
             <div class="text-left">
                 <b>Management events</b> are always logged:
@@ -1237,7 +1237,7 @@ const aws_cards = [
     {
         "q": "Describe use cases for IAM roles.",
         "a": `
-            <div class="text-left">IAM role is an <i>identity</i>, like a <i>user</i> or a <i>group</i>. A role can be assumed by a user, but it can also be assumed without a user. Use case examples:</div><br>
+            <div class="text-left">IAM role is an <i>identity</i>. A role can be assumed by a user, but it can also be assumed without a user. Use case examples:</div><br>
             <ul>
                 <li>Allow an application to access AWS resources without embedding keys/credentials in the app.</li>
                 <li>Segregate production and test environments with corresponding roles for developers to take as needed (in order to prevent accidents).</li>
@@ -1275,6 +1275,15 @@ const aws_cards = [
                 <li>You can <i>consolidate billing</i> from multiple accounts to gain volume discounts.</li>
                 <li>You can apply <i>Service Control Policies</i> to set boundaries for different accounts or OUs.</li>
             </ul>
+        `
+    },
+    {
+        "q": "Is Direct Connect traffic encrypted?",
+        "a": `
+            Direct Connect provides a private network connection between your office or private datacenter and AWS.
+            <b>Direct Connect does not encrypt your traffic.</b> However, you might still send encrypted traffic
+            over Direct Connect. For example, if you connect to an EC2 instance using SSH over Direct Connect,
+            then your connection is encrypted (because of SSH, not because of Direct Connect).
         `
     }
 ]
